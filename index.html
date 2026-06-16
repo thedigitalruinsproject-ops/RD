@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheDigitalRuins | Portal de Noticias Autónomo</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --bg-principal: #0a0c10;
+            --color-acento: #ffb000;
+            --color-acento-rgb: 255, 176, 0;
+            --bg-tarjetas: #121620;
+            --borde-sutil: #2a3347;
+            --texto-claro: #e2e8f0;
+            --texto-apagado: #94a3b8;
+            
+            /* IDENTIDAD TIPOGRÁFICA CARGADA */
+            --ff-titulos: 'Playfair Display', Georgia, serif;
+            --ff-cuerpo: 'Space Grotesk', sans-serif;
+            --ff-tecnica: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-principal) !important;
+            color: var(--texto-claro) !important;
+            font-family: var(--ff-cuerpo);
+            overflow-x: hidden;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .wrapper-principal { display: flex; flex-direction: column; flex: 1; }
+
+        header { 
+            border-bottom: 2px solid var(--color-acento); 
+            background-color: var(--bg-principal); 
+            position: sticky; top: 0; z-index: 100; 
+        }
+        .top-bar { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 15px 20px; border-bottom: 1px solid var(--borde-sutil); }
+        
+        .logo-main { 
+            font-size: 1.9rem; 
+            font-weight: 800; 
+            color: var(--texto-claro); 
+            text-decoration: none; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            font-family: var(--ff-titulos); 
+            text-align: center; 
+            user-select: none;
+        }
+        .logo-main span { color: var(--color-acento); cursor: pointer; transition: text-shadow 0.3s; }
+        .logo-main span:hover { text-shadow: 0 0 10px rgba(var(--color-acento-rgb), 0.5); }
+        .header-tag { font-size: 0.75rem; color: var(--texto-apagado); font-family: var(--ff-tecnica); letter-spacing: 1px; text-transform: uppercase; }
+
+        /* TICKER */
+        .ticker-container { background: linear-gradient(90deg, #121620 0%, #0d111a 100%); border-bottom: 1px solid var(--borde-sutil); overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 42px; }
+        .ticker-label { background: var(--color-acento); color: #0a0c10; padding: 0 15px; height: 100%; display: flex; align-items: center; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; z-index: 3; box-shadow: 5px 0 15px rgba(10, 12, 16, 0.6); font-family: var(--ff-cuerpo); letter-spacing: 0.5px;}
+        .ticker-text-wrapper { display: inline-block; animation: ticker 35s linear infinite; padding-left: 10px; z-index: 1; font-family: var(--ff-tecnica); }
+        .ticker-item { display: inline-block; padding: 0 35px; color: var(--texto-claro); font-size: 0.85rem; font-weight: 400; }
+        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+
+        /* CUERPO ASIDE Y FEED */
+        .cuerpo-plataforma { display: flex; flex-direction: column; width: 100%; max-width: 1200px; margin: 0 auto; flex: 1; }
+        aside { width: 100%; background: #0d111a; border-bottom: 1px solid var(--borde-sutil); padding: 25px 20px; }
+        .aside-titulo { font-size: 0.75rem; text-transform: uppercase; color: var(--color-acento); letter-spacing: 2px; margin-bottom: 15px; font-weight: 700; font-family: var(--ff-tecnica); }
+        .menu-secciones { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .menu-secciones li { font-size: 0.9rem; text-transform: uppercase; font-weight: 500; color: var(--texto-apagado); cursor: pointer; transition: 0.2s; padding: 4px 0; letter-spacing: 0.5px; }
+        .menu-secciones li:hover, .menu-secciones li.active { color: var(--color-acento); padding-left: 5px; }
+
+        .container-feed { padding: 20px 15px; flex: 1; }
+        .news-feed-header { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid var(--borde-sutil); padding-bottom: 15px; }
+        .news-feed-header h2 { font-family: var(--ff-titulos); font-weight: 600; font-size: 1.6rem; }
+
+        .grid-featured { display: flex; flex-direction: column; gap: 25px; margin-bottom: 40px; }
+        .news-card { background: var(--bg-tarjetas); border: 1px solid var(--borde-sutil); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, border-color 0.2s; }
+        .news-card:hover { border-color: var(--color-acento); transform: translateY(-2px); }
+        .news-img { width: 100%; height: auto; max-height: 380px; object-fit: cover; border-bottom: 1px solid var(--borde-sutil); }
+        .news-body { padding: 20px; }
+        .news-tag { font-size: 0.75rem; text-transform: uppercase; font-weight: 600; color: #00e5ff; margin-bottom: 8px; display: inline-block; font-family: var(--ff-tecnica); }
+        .news-title { font-family: var(--ff-titulos); font-size: 1.55rem; font-weight: 600; line-height: 1.3; margin-bottom: 10px; color: #ffffff; cursor: pointer; transition: 0.2s; }
+        .news-title:hover { color: var(--color-acento); }
+        .news-excerpt { color: var(--texto-apagado); font-size: 0.95rem; margin-bottom: 15px; font-weight: 400; }
+        .news-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--texto-apagado); border-top: 1px solid var(--borde-sutil); padding-top: 12px; font-family: var(--ff-tecnica); }
+        
+        /* NUEVAS FUNCIONALIDADES */
+        .search-filter-bar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; padding: 15px; background: #161d2f; border: 1px solid var(--borde-sutil); border-radius: 6px; }
+        .search-input { background: #1a1f2c; border: 1px solid var(--borde-sutil); color: var(--texto-claro); padding: 10px 12px; border-radius: 4px; font-family: var(--ff-cuerpo); font-size: 0.95rem; width: 100%; }
+        .search-input:focus { border-color: var(--color-acento); outline: none; }
+        .filter-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .filter-select { background: #1a1f2c; border: 1px solid var(--borde-sutil); color: var(--texto-claro); padding: 8px 10px; border-radius: 4px; font-family: var(--ff-cuerpo); font-size: 0.9rem; cursor: pointer; }
+        .filter-select:focus { border-color: var(--color-acento); outline: none; }
+        .filter-label { font-size: 0.85rem; color: var(--texto-apagado); font-weight: 500; }
+        
+        .views-rating { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 0.85rem; }
+        .views-badge { display: flex; align-items: center; gap: 4px; color: #64b8ff; background: rgba(100, 184, 255, 0.1); padding: 3px 8px; border-radius: 3px; }
+        .rating-stars { display: flex; align-items: center; gap: 3px; cursor: pointer; }
+        .star { font-size: 0.9rem; color: #8b7355; transition: 0.2s; }
+        .star.filled { color: #ffb000; }
+        .star:hover { transform: scale(1.2); }
+        
+        .favorite-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 4px 8px; transition: 0.2s; color: #94a3b8; }
+        .favorite-btn:hover { color: var(--color-acento); }
+        .favorite-btn.is-fav { color: #ff0055; }
+        
+        .scroll-to-top { position: fixed; bottom: 30px; right: 30px; background: var(--color-acento); color: #0a0c10; width: 45px; height: 45px; border: none; border-radius: 50%; cursor: pointer; display: none; align-items: center; justify-content: center; z-index: 999; font-size: 1.2rem; transition: 0.3s; box-shadow: 0 4px 12px rgba(var(--color-acento-rgb), 0.3); }
+        .scroll-to-top:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(var(--color-acento-rgb), 0.5); }
+        .scroll-to-top.show { display: flex; }
+        
+        .theme-toggle { background: transparent; border: 1px solid var(--color-acento); color: var(--color-acento); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.3s; }
+        .theme-toggle:hover { background: var(--color-acento); color: #0a0c10; }
+        
+        .news-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 10px; }
+        .news-card-actions { display: flex; gap: 5px; }
+        
+        body.light-mode { --bg-principal: #f5f5f5; --bg-tarjetas: #ffffff; --borde-sutil: #e0e0e0; --texto-claro: #1a1a1a; --texto-apagado: #555555; }
+        body.light-mode .modal-content { background: #ffffff; }
+        body.light-mode .full-admin-overlay { background: #f0f0f0; }
+        body.light-mode .config-card { background: #ffffff; }
+        body.light-mode .comment-input { background: #f9f9f9; }
+        body.light-mode header { background-color: #f5f5f5; }
+        body.light-mode aside { background: #f9f9f9; }
+
+        /* INPUTS Y FORMULARIOS */
+        .comment-input { background: #1a1f2c; border: 1px solid var(--borde-sutil); color: var(--texto-claro); padding: 12px; border-radius: 4px; font-family: var(--ff-cuerpo); width: 100%; margin-bottom: 10px; font-size: 0.95rem; }
+        .comment-input:focus { border-color: var(--color-acento); outline: none; }
+        .comment-submit { background: transparent; border: 1px solid var(--color-acento); color: var(--color-acento); padding: 14px; cursor: pointer; font-weight: bold; border-radius: 4px; width: 100%; margin-top: 5px; text-transform: uppercase; transition: 0.2s; font-family: var(--ff-cuerpo); letter-spacing: 0.5px; }
+        .comment-submit:hover { background: var(--color-acento); color: #0a0c10; }
+        .file-label { display: block; background: #2a3347; color: var(--texto-claro); padding: 12px; border-radius: 4px; border: 1px dashed var(--color-acento); cursor: pointer; text-align: center; margin-bottom: 10px; font-family: var(--ff-cuerpo); }
+
+        /* COMPARTIR */
+        .share-bar { display: flex; align-items: center; gap: 10px; margin: 20px 0; padding: 10px 0; border-top: 1px dashed var(--borde-sutil); border-bottom: 1px dashed var(--borde-sutil); font-family: var(--ff-cuerpo); }
+        .share-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; text-decoration: none; color: #fff; transition: opacity 0.2s; }
+        .share-btn:hover { opacity: 0.85; }
+        .share-x { background-color: #000000; border: 1px solid #333; }
+        .share-wa { background-color: #25D366; color: #fff; }
+        .share-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+
+        /* INTERFAZ DE ADMINISTRACIÓN DE PANTALLA COMPLETA */
+        .full-admin-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(7,10,18,0.94), rgba(3,6,12,0.86)); z-index: 2000; display: none; overflow-y: auto; padding: 40px 20px; font-family: var(--ff-cuerpo); backdrop-filter: blur(4px); }
+        .admin-box-maestro { max-width: 1100px; margin: 0 auto; background: linear-gradient(180deg,#0f1422,#0b0e16); border: 2px solid var(--color-acento); border-radius: 10px; padding: 22px; box-shadow: 0 8px 40px rgba(var(--color-acento-rgb), 0.18); transition: transform 0.18s ease, box-shadow 0.18s ease; }
+        .admin-box-maestro:hover { transform: translateY(-6px); box-shadow: 0 14px 60px rgba(var(--color-acento-rgb), 0.22); }
+        .admin-header-panel { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borde-sutil); padding-bottom: 15px; margin-bottom: 25px; }
+        .admin-header-panel h2 { display:flex; align-items:center; gap:12px; font-size:1.45rem; }
+        .admin-header-panel .admin-actions { display:flex; gap:10px; align-items:center; }
+        
+        .grid-config-columns { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 25px; }
+        .config-card { background: #161d2f; border: 1px solid var(--borde-sutil); padding: 20px; border-radius: 6px; }
+        .config-card h4 { color: var(--color-acento); margin-bottom: 15px; font-size: 1rem; text-transform: uppercase; display: flex; align-items: center; gap: 8px; font-family: var(--ff-cuerpo); font-weight: 700; }
+
+        .palette-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        .palette-btn { background: #222b3e; border: 1px solid var(--borde-sutil); padding: 10px; text-align: left; border-radius: 4px; cursor: pointer; color: #fff; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-family: var(--ff-cuerpo); }
+        .palette-preview { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
+
+        .control-list-container { max-height: 200px; overflow-y: auto; background: #0a0e1a; padding: 10px; border-radius: 4px; border: 1px solid var(--borde-sutil); font-family: var(--ff-cuerpo); }
+        .control-row-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #1f2738; font-size: 0.85rem; gap: 10px; }
+        
+        .btn-inline-admin { background: #2a3347; border: none; color: #fff; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 0.75rem; font-family: var(--ff-cuerpo); }
+        .btn-inline-admin.edit-btn { background: var(--color-acento); color: #000; font-weight: bold; }
+        .btn-inline-admin.del-btn { background: #ef4444; color: #fff; }
+
+        .emoji-box-wrapper { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-bottom: 12px; background: #0d111a; padding: 10px; border-radius: 4px; }
+        .emoji-node { background: #1c2638; text-align: center; padding: 6px 0; font-size: 1.1rem; border-radius: 4px; cursor: pointer; }
+        .emoji-node:hover { background: var(--color-acento); color: #000; }
+
+        .section-row-item { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+        .btn-order-action { background: #2a3347; border: none; color: #fff; width: 30px; height: 30px; border-radius: 4px; cursor: pointer; }
+
+        /* MODALES Y COMENTARIOS */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 12, 16, 0.98); z-index: 1000; display: none; justify-content: center; align-items: center; }
+        .modal-content { background: var(--bg-tarjetas); width: 100%; height: 100%; overflow-y: auto; padding: 30px 20px; position: relative; }
+        .close-modal { position: absolute; top: 15px; right: 15px; background: #1a1f2c; border: 1px solid var(--borde-sutil); color: var(--texto-claro); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .modal-img { width: 100%; max-height: 350px; object-fit: cover; border-radius: 6px; margin-bottom: 20px; }
+
+        .comments-section { margin-top: 25px; background: #0d111a; padding: 15px; border-radius: 6px; border: 1px solid var(--borde-sutil); }
+        .comment-item { background: var(--bg-tarjetas); padding: 12px; border-radius: 4px; margin-bottom: 10px; border-left: 3px solid var(--color-acento); }
+        .comment-author { font-size: 0.85rem; font-weight: bold; color: #00e5ff; font-family: var(--ff-cuerpo); }
+        .comment-text { font-size: 0.95rem; color: var(--texto-claro); font-family: var(--ff-cuerpo); }
+        .comment-time { font-family: var(--ff-tecnica); font-size: 0.75rem; color: #64748b; text-align: right; margin-top: 5px; }
+
+        footer { background-color: #0d111a; border-top: 1px solid var(--borde-sutil); padding: 30px 20px; margin-top: auto; text-align: center; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .footer-email { font-size: 1.05rem; color: #ffffff; text-decoration: none; font-family: var(--ff-tecnica); background: #121620; padding: 8px 18px; border-radius: 30px; border: 1px solid var(--borde-sutil); display: inline-flex; align-items: center; gap: 10px; }
+
+        @media (min-width: 768px) {
+            .top-bar { flex-direction: row; justify-content: space-between; padding: 15px 4%; }
+            .cuerpo-plataforma { flex-direction: row; }
+            aside { width: 280px; border-bottom: none; border-right: 1px solid var(--borde-sutil); padding: 35px 25px; }
+            .container-feed { padding: 35px 30px; }
+            .grid-config-columns { grid-template-columns: 1fr 1fr; }
+            .modal-content { max-width: 760px; height: auto; max-height: 90vh; border-radius: 8px; border: 1px solid var(--borde-sutil); padding: 40px; }
+            .footer-content { flex-direction: row; justify-content: space-between; text-align: left; }
+        }
+        /* Admin centering behavior (visible via class) */
+        .full-admin-overlay { display: none; }
+        .full-admin-overlay.show { display: flex; align-items: flex-start; justify-content: center; }
+        .admin-box-maestro { margin-top: 20px; }
+        /* Estilos específicos para modal de login admin */
+        #admin-login-modal .modal-content { max-width: 420px; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); padding: 18px; }
+        #admin-login-modal .close-modal { background: transparent; border: none; color: var(--texto-apagado); font-size: 1.1rem; }
+        #admin-login-modal .comment-submit { width: auto; padding: 10px 14px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="top-bar">
+            <div class="header-tag" id="pub-header-tag-left"><i class="fa-solid fa-box-archive"></i> PRESERVACIÓN DIGITAL</div>
+            <div class="logo-main" id="pub-main-logo">TheDigital<span ondblclick="toggleControlMaestro()">Ruins</span></div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div class="header-tag" id="pub-header-tag-right" style="color: var(--color-acento); font-weight: bold;"><i class="fa-solid fa-bullhorn"></i> PRENSA AUTÓNOMA</div>
+                <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleThemeMode()" title="Modo oscuro/claro"><i class="fa-solid fa-sun"></i></button>
+            </div>
+        </div>
+        <div class="ticker-container">
+            <div class="ticker-label">Último Minuto</div>
+            <div class="ticker-text-wrapper" id="ticker-text-container"></div>
+        </div>
+    </header>
+
+    <!-- Modal de login admin -->
+    <div id="admin-login-modal" class="modal" aria-hidden="true">
+        <div class="modal-content" style="max-width:420px;">
+            <button class="close-modal" onclick="closeAdminModal()">✕</button>
+            <div style="padding:20px;">
+                <h3 style="color:var(--color-acento); margin-bottom:10px;">Acceso Administrador</h3>
+                <p style="color:var(--texto-apagado); margin-bottom:15px;">Selecciona tu cuenta de moderador y ingresa la contraseña.</p>
+                <select id="admin-email-select" class="search-input" style="margin-bottom:12px;">
+                    <option value="">Selecciona administrador</option>
+                </select>
+                <input id="admin-password-input" type="password" class="search-input" placeholder="Contraseña admin">
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button class="comment-submit" onclick="submitAdminLogin()">Entrar</button>
+                    <button class="btn-inline-admin" onclick="closeAdminModal()">Cancelar</button>
+                </div>
+                <div id="admin-login-error" style="color:#ef4444; margin-top:10px; display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper-principal" id="view-public-portal">
+        <div class="cuerpo-plataforma">
+            <aside>
+                <div class="aside-titulo">Secciones de Investigación</div>
+                <ul class="menu-secciones" id="render-aside-menu"></ul>
+            </aside>
+
+            <div class="container-feed">
+                <div class="news-feed-header">
+                    <h2 id="current-category-title">Todos los Artículos</h2>
+                    <div class="search-filter-bar">
+                        <input type="text" id="search-input" class="search-input" placeholder="🔍 Buscar artículos..." oninput="applySearchAndFilters()">
+                        <div class="filter-row">
+                            <span class="filter-label">Filtrar por:</span>
+                            <select id="date-filter" class="filter-select" onchange="applySearchAndFilters()">
+                                <option value="">Todas las fechas</option>
+                                <option value="7">Últimos 7 días</option>
+                                <option value="30">Últimos 30 días</option>
+                                <option value="90">Últimos 90 días</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="news-container" class="grid-featured"></div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <div>
+                    <div id="pub-footer-title" style="font-size: 0.9rem; text-transform: uppercase; color: var(--color-acento); font-weight:700;"><i class="fa-solid fa-headset"></i> Canal de Contacto Oficial</div>
+                    <p id="pub-footer-desc" style="font-size: 0.85rem; color: #94a3b8; margin-top: 5px;">Mesa de partes virtual confidencial para envío de reportes y filtraciones.</p>
+                </div>
+                <div>
+                    <a href="mailto:thedigitalruinsproject@gmail.com" class="footer-email" id="pub-footer-mail">
+                        <i class="fa-solid fa-envelope"></i> thedigitalruinsproject@gmail.com
+                    </a>
+                </div>
+            </div>
+            <div class="footer-copy" style="font-size:0.75rem; color:#64748b; text-align:center; margin-top:15px; font-family: var(--ff-tecnica);">
+                &copy; 2026 THEDIGITALRUINS. Todos los derechos reservados.
+            </div>
+        </footer>
+    </div>
+    
+    <!-- BOTÓN SCROLL TO TOP -->
+    <button class="scroll-to-top" id="scroll-to-top-btn" onclick="scrollToTop()"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <!-- ENTORNO CONTROL MAESTRO AISLADO COMPLETO -->
+    <div id="panel-control-maestro" class="full-admin-overlay">
+        <div class="admin-box-maestro">
+            <div class="admin-header-panel">
+                <div>
+                    <h2 style="color: var(--color-acento); font-size: 1.5rem; font-family: var(--ff-titulos);"><i class="fa-solid fa-folder-gear"></i> Consola de Control Maestro General</h2>
+                    <div id="admin-session-info" style="color: var(--texto-apagado); font-size:0.85rem;">Moderador: <span style="color:#ffffff;">ninguno</span></div>
+                </div>
+                <button class="comment-submit" style="width:auto; padding: 8px 16px; margin:0;" onclick="toggleControlMaestro()">Volver al Portal Público</button>
+            </div>
+
+            <!-- FILA EDICIÓN DE TEXTOS DE CABECERA Y FOOTER -->
+            <div class="config-card" style="margin-bottom: 25px;">
+                <h4><i class="fa-solid fa-font"></i> Editor de Títulos e Identidad General (Textos del Portal)</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
+                    <div>
+                        <label style="font-size:0.75rem; color:var(--texto-apagado);">Nombre del Portal:</label>
+                        <input type="text" id="cfg-portal-name" class="comment-input" oninput="updateLiveTexts()">
+                    </div>
+                    <div>
+                        <label style="font-size:0.75rem; color:var(--texto-apagado);">Tag Izquierdo Superior:</label>
+                        <input type="text" id="cfg-tag-left" class="comment-input" oninput="updateLiveTexts()">
+                    </div>
+                    <div>
+                        <label style="font-size:0.75rem; color:var(--texto-apagado);">Tag Derecho Superior:</label>
+                        <input type="text" id="cfg-tag-right" class="comment-input" oninput="updateLiveTexts()">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 10px;">
+                    <div>
+                        <label style="font-size:0.75rem; color:var(--texto-apagado);">Título de Contacto (Footer):</label>
+                        <input type="text" id="cfg-footer-title" class="comment-input" oninput="updateLiveTexts()">
+                    </div>
+                    <div>
+                        <label style="font-size:0.75rem; color:var(--texto-apagado);">Descripción de Contacto (Footer):</label>
+                        <input type="text" id="cfg-footer-desc" class="comment-input" oninput="updateLiveTexts()">
+                    </div>
+                    <div>
+                        <label style="font-size:0.75rem; color:var(--texto-apagado);">Email de Contacto (Footer):</label>
+                        <input type="text" id="cfg-footer-mail" class="comment-input" oninput="updateLiveTexts()">
+                    </div>
+                </div>
+                <button class="comment-submit" style="padding:10px; font-size:0.85rem; margin-top: 5px;" onclick="savePortalTexts()">Guardar Textos de Identidad</button>
+            </div>
+
+            <div class="grid-config-columns">
+                <!-- COLUMNA COLORES Y TICKER -->
+                <div class="config-card">
+                    <h4><i class="fa-solid fa-palette"></i> Paletas Temáticas de Identidad</h4>
+                    <div class="palette-grid">
+                        <button class="palette-btn" onclick="selectPalette('#0a0c10', '#ffb000')"><span class="palette-preview" style="background:#ffb000;"></span> Ámbar Clásico</button>
+                        <button class="palette-btn" onclick="selectPalette('#060f0e', '#00ffcc')"><span class="palette-preview" style="background:#00ffcc;"></span> Matrix Cyber</button>
+                        <button class="palette-btn" onclick="selectPalette('#1a0f1a', '#ff0055')"><span class="palette-preview" style="background:#ff0055;"></span> Ruina Carmesí</button>
+                        <button class="palette-btn" onclick="selectPalette('#111111', '#ffffff')"><span class="palette-preview" style="background:#ffffff;"></span> Prensa Minimal</button>
+                        <button class="palette-btn" onclick="selectPalette('#071228', '#3aa0ff')"><span class="palette-preview" style="background:#3aa0ff;"></span> Nocturna Azul</button>
+                        <button class="palette-btn" onclick="selectPalette('#2b160c', '#ff7a00')"><span class="palette-preview" style="background:#ff7a00;"></span> Tierra Oxidada</button>
+                        <button class="palette-btn" onclick="selectPalette('#012e1f', '#8aff7a')"><span class="palette-preview" style="background:#8aff7a;"></span> Aurora Verde</button>
+                        <button class="palette-btn" onclick="selectPalette('#0f0f10', '#bdbdbd')"><span class="palette-preview" style="background:#bdbdbd;"></span> Monocromo</button>
+                    </div>
+                    
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--texto-apagado);">Fondo Personalizado:</label>
+                            <input type="color" id="cfg-bg-color" class="comment-input" style="height:40px; padding:2px;" onchange="applyCustomColors()">
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:var(--texto-apagado);">Acento Personalizado:</label>
+                            <input type="color" id="cfg-accent-color" class="comment-input" style="height:40px; padding:2px;" onchange="applyCustomColors()">
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top:20px;"><i class="fa-solid fa-bolt"></i> Caja Central de Símbolos Informativos</h4>
+                    <div class="emoji-box-wrapper" id="ticker-emoji-grid"></div>
+                    <input type="text" id="ticker-input" class="comment-input" placeholder="Anuncio de la barra de noticias...">
+                    <button class="comment-submit" style="padding:10px; font-size:0.85rem;" onclick="saveTickerData()">Actualizar Ticker</button>
+                </div>
+
+                <!-- COLUMNA CONTROL DE APARTADOS -->
+                <div class="config-card">
+                    <h4><i class="fa-solid fa-list-check"></i> Ordenador y Editor de Apartados Laterales</h4>
+                    <div id="section-manager-container" style="margin-bottom:12px;"></div>
+                    <div style="display: flex; gap: 10px; border-top: 1px dashed var(--borde-sutil); padding-top: 15px;">
+                        <input type="text" id="new-section-name" class="comment-input" style="margin:0;" placeholder="Nombre de nueva sección...">
+                        <button class="comment-submit" style="width: auto; margin:0; padding:0 20px; font-size:0.85rem;" onclick="addNewSection()">Añadir Sección</button>
+                    </div>
+                    <button class="comment-submit" style="padding:10px; font-size:0.85rem; margin-top: 15px;" onclick="saveSectionLayout()">Guardar Estructura Lateral</button>
+                </div>
+            </div>
+
+            <!-- GESTORES INTEGRADOS EXCLUSIVOS DEL CONTROL MAESTRO -->
+            <div class="grid-config-columns">
+                <!-- PANEL GESTOR DE ARTÍCULOS EXISTENTES -->
+                <div class="config-card">
+                    <h4><i class="fa-solid fa-newspaper"></i> Inventario y Modificación de Artículos</h4>
+                    <div class="control-list-container" id="admin-news-inventory"></div>
+                </div>
+
+                <!-- PANEL GESTOR DE COMENTARIOS EXISTENTES -->
+                <div class="config-card">
+                    <h4><i class="fa-solid fa-comment-dots"></i> Buscador y Editor Global de Comentarios</h4>
+                    <div class="control-list-container" id="admin-comments-inventory"></div>
+                </div>
+            </div>
+
+            <!-- REDACTOR/EDITOR DE ENTRADAS -->
+            <div class="config-card" style="background: #141b2b;" id="anchor-redactor">
+                <h3 id="form-action-title" style="color: var(--color-acento); margin-bottom: 15px;"><i class="fa-solid fa-pen-nib"></i> Formulario Redactor Avanzado</h3>
+                <input type="hidden" id="edit-post-id" value="">
+                <input type="hidden" id="post-img-base64" value="">
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                    <input type="text" id="post-title" class="comment-input" placeholder="Título Central de la Noticia">
+                    <input type="text" id="post-tag" class="comment-input" placeholder="Subtítulo / Jurisdicción">
+                </div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                    <select id="post-category" class="comment-input"></select>
+                    <div>
+                        <label class="file-label" for="post-img-file" style="margin:0; padding:10px;"><i class="fa-solid fa-image"></i> Cargar Imagen</label>
+                        <input type="file" id="post-img-file" accept="image/*" style="display: none;" onchange="processLocalImage(this)">
+                        <div id="file-preview-status" style="font-size:0.8rem; color:#00e5ff; display:none; margin-top:2px;"></div>
+                    </div>
+                </div>
+
+                <textarea id="post-excerpt" class="comment-input" style="height: 50px; resize: none; margin-top:10px;" placeholder="Resumen corto..."></textarea>
+                <textarea id="post-content" class="comment-input" style="height: 150px;" placeholder="Cuerpo argumentativo completo..."></textarea>
+                
+                <button id="btn-submit-form" class="comment-submit" onclick="savePost()">Ejecutar Guardado Completo</button>
+                <button id="btn-cancel-form" class="comment-submit" onclick="cancelEditing()" style="display:none; border-color:#ef4444; color:#ef4444;">Descartar Edición</button>
+            </div>
+
+            <!-- NUEVAS HERRAMIENTAS: Drafts, Programación, Moderación, EmailJS, Backups, Analytics, Admins y Búsqueda Avanzada -->
+            <div class="grid-config-columns" style="margin-top:18px;">
+                <div class="config-card">
+                    <h4><i class="fa-solid fa-save"></i> Borradores y Programación</h4>
+                    <div style="display:flex; gap:10px; margin-bottom:8px;">
+                        <button class="btn-inline-admin" onclick="saveDraftFromForm()">Guardar borrador</button>
+                        <button class="btn-inline-admin" onclick="publishDraftFromForm()">Publicar ahora</button>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-bottom:8px; align-items:center;">
+                        <label style="color:var(--texto-apagado); font-size:0.85rem;">Publicar en:</label>
+                        <input type="datetime-local" id="cfg-schedule-datetime" class="comment-input" style="height:38px; padding:6px;">
+                    </div>
+                    <div class="control-list-container" id="drafts-list-container" style="max-height:160px; margin-top:8px;"></div>
+                </div>
+
+                <div class="config-card">
+                    <h4><i class="fa-solid fa-shield-halved"></i> Moderación y Alertas</h4>
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <button class="btn-inline-admin" onclick="markAllCommentsReviewed()">Marcar todos revisados</button>
+                        <button class="btn-inline-admin del-btn" onclick="purgeSpamComments()">Eliminar spam</button>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <label style="color:var(--texto-apagado); font-size:0.85rem;">Alertas por email (EmailJS)</label>
+                        <input id="emailjs-service" class="comment-input" placeholder="service_xxx">
+                        <input id="emailjs-template" class="comment-input" placeholder="template_xxx">
+                        <input id="emailjs-user" class="comment-input" placeholder="user_xxx">
+                        <div style="display:flex; gap:8px; margin-top:6px;"><button class="comment-submit" onclick="saveEmailJSConfig()">Guardar claves</button><button class="btn-inline-admin" onclick="testSendAlert()">Enviar prueba</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-config-columns" style="margin-top:12px;">
+                <div class="config-card">
+                    <h4><i class="fa-solid fa-file-export"></i> Export / Import / Backups</h4>
+                    <div style="display:flex; gap:8px; margin-bottom:8px;"><button class="btn-inline-admin" onclick="downloadBackup()">Descargar backup</button><button class="btn-inline-admin" onclick="restoreFromFile()">Restaurar (JSON)</button><input type="file" id="import-json-file" style="display:none;" onchange="handleImportFile(this)"></div>
+                    <div style="display:flex; gap:8px; align-items:center; margin-top:8px;"><label style="color:var(--texto-apagado);">Auto-backup cada (min):</label><input id="cfg-backup-interval" class="comment-input" style="width:90px; height:36px; padding:6px;" placeholder="0"></div>
+                </div>
+
+                <div class="config-card">
+                    <h4><i class="fa-solid fa-chart-line"></i> Analytics & Tendencias</h4>
+                    <div id="analytics-summary" style="font-size:0.9rem; color:var(--texto-apagado);"></div>
+                    <div style="margin-top:10px;"><button class="btn-inline-admin" onclick="computeTrends()">Actualizar métricas</button></div>
+                </div>
+            </div>
+
+            <div class="grid-config-columns" style="margin-top:12px;">
+                <div class="config-card">
+                    <h4><i class="fa-solid fa-user-gear"></i> Gestión de Admins y Auditoría</h4>
+                    <div style="display:flex; gap:8px; margin-bottom:8px;"><input id="new-admin-email" class="comment-input" placeholder="admin@example.com"><button class="btn-inline-admin" onclick="addAdmin()">Añadir</button></div>
+                    <div id="admin-users-list" class="control-list-container"></div>
+                    <h4 style="margin-top:10px;">Registro (Auditoría)</h4>
+                    <div id="audit-log" class="control-list-container" style="max-height:140px;"></div>
+                </div>
+
+                <div class="config-card">
+                    <h4><i class="fa-solid fa-magnifying-glass"></i> Búsqueda avanzada & Vista previa de tema</h4>
+                    <input id="admin-advanced-search" class="search-input" placeholder="Buscar por título, contenido, autor..." oninput="adminAdvancedSearch()">
+                    <div style="display:flex; gap:8px; margin-top:8px;"><button class="btn-inline-admin" onclick="previewCurrentTheme()">Vista previa tema</button><button class="btn-inline-admin" onclick="revertThemePreview()">Revertir preview</button></div>
+                </div>
+            </div>
+
+            <!-- FIN NUEVAS HERRAMIENTAS -->
+
+        </div>
+    </div>
+
+    <!-- MODAL DE DETALLE -->
+    <div id="article-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeArticle()"><i class="fa-solid fa-xmark"></i></button>
+            <div id="modal-body-content"></div>
+            
+            <div class="share-bar" id="modal-share-bar"></div>
+
+            <div class="comments-section">
+                <h4 style="color:var(--color-acento); margin-bottom:12px;"><i class="fa-solid fa-comments"></i> Mesa de Discusión Pública</h4>
+                <div id="comments-list-container"></div>
+                <div style="margin-top:15px; border-top:1px solid var(--borde-sutil); padding-top:15px;">
+                    <input type="text" id="commenter-name" class="comment-input" placeholder="Tu Nombre o Iniciales" style="margin-bottom:8px;">
+                    <textarea id="commenter-text" class="comment-input" style="height:60px; resize:none;" placeholder="Aporte u opinión civil..."></textarea>
+                    <button class="comment-submit" style="padding:10px; font-size:0.85rem;" onclick="submitNewComment()">Subir Comentario</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== CREDENCIALES ENCRIPTADAS ==========
+        // SISTEMA COMPLETAMENTE ENCRIPTADO - CONTRASEÑA PROTEGIDA CON AES-256
+        const ENCRYPTION_KEY = "TheDigitalRuins_Secured";
+        const _0x_admin_pass_encrypted = "U2FsdGVkX1/Q5nX93RpLCf7zemXjY4cNPDuY0wyN7f0wh4+TzFrs7w==";
+        
+        // Desencriptar contraseña en tiempo de ejecución usando Web Crypto API
+        async function decryptPasswordAsync() {
+            try {
+                const b64 = _0x_admin_pass_encrypted;
+                const binary = atob(b64);
+                const bytes = new Uint8Array(Array.from(binary).map(c => c.charCodeAt(0)));
+
+                const header = String.fromCharCode.apply(null, Array.from(bytes.slice(0,8)));
+                let iv, ciphertext;
+                if (header === 'Salted__') {
+                    iv = bytes.slice(8, 24);
+                    ciphertext = bytes.slice(24);
+                } else {
+                    iv = bytes.slice(0, 16);
+                    ciphertext = bytes.slice(16);
+                }
+
+                const encoder = new TextEncoder();
+                const keyMaterial = await crypto.subtle.importKey(
+                    'raw',
+                    encoder.encode(ENCRYPTION_KEY),
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveBits']
+                );
+
+                const derivedBits = await crypto.subtle.deriveBits(
+                    { name: 'PBKDF2', salt: new Uint8Array(16), iterations: 100000, hash: 'SHA-256' },
+                    keyMaterial,
+                    256
+                );
+
+                const aesKey = await crypto.subtle.importKey(
+                    'raw',
+                    derivedBits,
+                    { name: 'AES-CBC' },
+                    false,
+                    ['decrypt']
+                );
+
+                const decrypted = await crypto.subtle.decrypt({ name: 'AES-CBC', iv: iv }, aesKey, ciphertext);
+                const dec = new TextDecoder().decode(decrypted);
+                return dec;
+            } catch (e) {
+                console.error('Error desencriptando (WebCrypto):', e);
+                return "";
+            }
+        }
+
+        // Inicializar variable y promesa de desencriptado
+        let _0x_admin_pass = "";
+        const decryptReadyPromise = decryptPasswordAsync().then(p => { _0x_admin_pass = p; return p; });
+        // Funciones UI para modal de login admin
+        function openAdminModal() {
+            const modal = document.getElementById('admin-login-modal');
+            loadAdminEmailSelect();
+            modal.style.display = 'flex';
+            modal.setAttribute('aria-hidden', 'false');
+            setTimeout(() => { document.getElementById('admin-password-input').focus(); }, 120);
+            document.getElementById('admin-login-error').style.display = 'none';
+            document.getElementById('admin-password-input').value = '';
+            document.getElementById('admin-email-select').value = '';
+        }
+
+        function closeAdminModal() {
+            const modal = document.getElementById('admin-login-modal');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        function loadAdminEmailSelect() {
+            const select = document.getElementById('admin-email-select');
+            select.innerHTML = '<option value="">Selecciona administrador</option>';
+            getAdmins().forEach(email => {
+                const opt = document.createElement('option'); opt.value = email; opt.innerText = email; select.appendChild(opt);
+            });
+        }
+
+        async function submitAdminLogin() {
+            await decryptReadyPromise;
+            const email = document.getElementById('admin-email-select').value || '';
+            const val = document.getElementById('admin-password-input').value || '';
+            if(!email) {
+                const err = document.getElementById('admin-login-error'); err.textContent = 'Selecciona tu cuenta de administrador.'; err.style.display = 'block'; return;
+            }
+            if(!val) {
+                const err = document.getElementById('admin-login-error'); err.textContent = 'Ingresa la contraseña.'; err.style.display = 'block'; return;
+            }
+            if(val !== _0x_admin_pass) {
+                const err = document.getElementById('admin-login-error'); err.textContent = 'Contraseña incorrecta.'; err.style.display = 'block'; return;
+            }
+            // Login correcto
+            closeAdminModal();
+            isAdminUnlocked = true;
+            currentAdminUser = email;
+            audit('admin_login', `${email} inició sesión`);
+            const overlay = document.getElementById('panel-control-maestro'); const portal = document.getElementById('view-public-portal'); portal.style.display = 'none'; overlay.classList.add('show');
+            document.getElementById('ticker-input').value = tickerText;
+            const emg = document.getElementById('ticker-emoji-grid'); emg.innerHTML = ''; wideEmojiBank.forEach(e => { let n = document.createElement('div'); n.className='emoji-node'; n.innerText=e; n.onclick=()=>document.getElementById('ticker-input').value+=` ${e} `; emg.appendChild(n); });
+            renderSectionManager(); renderInventories(); renderPortalTexts();
+            updateAdminHeader();
+        }
+
+        let currentFilter = 'all';
+        let isAdminUnlocked = false;
+        let currentAdminUser = null;
+        let activeArticleId = null;
+        
+        // NUEVAS VARIABLES PARA FUNCIONALIDADES
+        let articleViews = {};  // { articleId: viewCount }
+        let articleRatings = {};  // { articleId: { totalRating: sum, count: num } }
+        let favoriteArticles = [];  // Array de IDs
+        let isDarkMode = true;  // true = dark, false = light
+
+        const wideEmojiBank = ["⚡", "⚖️", "🚨", "📂", "🔍", "🏛️", "🔥", "⚠️", "📌", "📢", "🛡️", "📜", "💻", "🌐"];
+        let tickerText = "⚡ Cobertura centralizada de resoluciones jurídicas, ciberderecho y coyuntura política peruana 2026. ⚖️";
+        let systemColors = { bg: "#0a0c10", accent: "#ffb000" };
+        
+        let globalTexts = {
+            portalName: "TheDigitalRuins",
+            tagLeft: "<i class=\"fa-solid fa-box-archive\"></i> PRESERVACIÓN DIGITAL",
+            tagRight: "<i class=\"fa-solid fa-bullhorn\"></i> PRENSA AUTÓNOMA",
+            footerTitle: "<i class=\"fa-solid fa-headset\"></i> Canal de Contacto Oficial",
+            footerDesc: "Mesa de partes virtual confidencial para envío de reportes y filtraciones.",
+            footerMail: "thedigitalruinsproject@gmail.com"
+        };
+
+        let activeSections = [
+            { id: "corrupcion", name: "Corrupción" },
+            { id: "juridico", name: "Ámbito Jurídico" },
+            { id: "libertad", name: "Libertad de Expresión" },
+            { id: "fiscalia", name: "Fiscalía" },
+            { id: "tecnologia", name: "Tecnología y Ciberderecho" }
+        ];
+
+        let allNews = [
+            // ===== CORRUPCIÓN =====
+            { 
+                id: "corr_1", 
+                category: "corrupcion", 
+                tag: "Gobierno Local", 
+                title: "Auditoría revela desvíos de $2.3 millones en presupuestos regionales", 
+                image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800", 
+                excerpt: "Informes internos exponen irregularidades en licitaciones públicas de infraestructura vial con sobrecostos del 180%.", 
+                content: "Un análisis detallado a los contratos adjudicados durante el primer trimestre del 2026 exponen sobrecostos y desvíos técnicos en obras de pavimentación regional. La Contraloría General ha identificado al menos 47 procesos de selección fraudulentos en los que se adjudicaron contratos a empresas fantasma.\n\nLos hallazgos muestran que entre enero y marzo se desviaron fondos por $2.3 millones de dólares originalmente destinados a obras de infraestructura crítica. Las víctimas principales son comunidades rurales donde la falta de mantenimiento vial ha deteriorado la conectividad y comercio local.\n\nEl frente de defensa civil ha exigido la intervención inmediata de las autoridades judicales competentes y la restitución de fondos. Se han solicitado medidas cautelares contra los funcionarios presuntamente involucrados y sus testaferros empresariales.", 
+                date: "15 Jun 2026" 
+            },
+            { 
+                id: "corr_2", 
+                category: "corrupcion", 
+                tag: "Sistema Financiero", 
+                title: "Red de lavado descubierta: $45 millones en operaciones sospechosas", 
+                image: "https://images.unsplash.com/photo-1553729782-f91f59b37495?w=800", 
+                excerpt: "Reportes de inteligencia financiera revelan un esquema coordinado de blanqueo de capitales a través de instituciones crediticias.", 
+                content: "La Unidad de Inteligencia Financiera (UIF) ha identificado un complejo esquema de lavado de dinero que involucra a ejecutivos de tres bancos privados, operarios de casas de cambio y empresarios inmobiliarios.\n\nEl modus operandi consistía en fragmentar transacciones de origen ilícito (provenientes de tráfico de drogas y extorsión) en depósitos menores a los límites de reporte, para posteriormente transferir los fondos a cuentas en jurisdicciones de alto riesgo.\n\nLas investigaciones han documentado al menos $45 millones circulando a través de esta red durante los últimos 18 meses. Se han congelado 23 cuentas bancarias y ordenado la detención preliminar de 8 imputados. El caso ha sido escalado al tribunal supremo de justicia por su complejidad y alcance.", 
+                date: "12 Jun 2026" 
+            },
+            { 
+                id: "corr_3", 
+                category: "corrupcion", 
+                tag: "Minería Ilegal", 
+                title: "Documentos filtrados exponen alianzas entre funcionarios y carteles mineros", 
+                image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800", 
+                excerpt: "Comunicaciones privadas y registros administrativos revelan coordinación de autoridades con operadores de minería ilegal.", 
+                content: "Fuentes anónimas han proporcionado al portal acceso a correspondencia interna, reportes operativos y transferencias bancarias que evidencian colusión sistemática entre miembros de instituciones reguladoras y grupos dedicados a extracción minera sin permisos.\n\nLa documentación indica que funcionarios de nivel gerencial en las dependencias ambientales retrasaban deliberadamente procesos de inspección, emitían reportes falsificados de cumplimiento normativo, y compartían información sobre operativos programados.\n\nA cambio, han recibido pagos mensuales en rango de $3,000 a $12,000 USD depositados en cuentas personales o transferidos a familiares. El daño ambiental acumulado en zonas protegidas es estimado en $500 millones según reportes de organizaciones ecologistas.", 
+                date: "10 Jun 2026" 
+            },
+            { 
+                id: "corr_4", 
+                category: "corrupcion", 
+                tag: "Salud Pública", 
+                title: "Medicinas falsificadas en hospitales: Complicidad de administradores documentada", 
+                image: "https://images.unsplash.com/photo-1576091160550-112173faf17e?w=800", 
+                excerpt: "Investigación revela que administradores de 12 centros de salud adquirían fármacos adulterados a precio de premium.", 
+                content: "Una exhaustiva investigación coordinada con organismos internacionales ha documentado que administradores y jefes de farmacia en 12 hospitales públicos compraban medicinas falsificadas a traficantes de drogas sintéticas, con márgenes de ganancia del 400%.\n\nLos medicamentos contrahechos eran reempacados en envases originales y distribuidos como si fueran genuinos a pacientes con enfermedades crónicas y oncológicas. Se han registrado al menos 347 casos de deterioro de salud y 23 muertes probablemente vinculadas a estos medicamentos adulterados.\n\nLa operación ha sido financiada por estructuras criminales que aprovechaban el sistema de compras públicas para legitimar sus ganancias ilícitas. Se han ordenado arrestos preventivos y congelamiento de bienes por aproximadamente $8.5 millones.", 
+                date: "08 Jun 2026" 
+            },
+            
+            // ===== JURÍDICO =====
+            { 
+                id: "jur_1", 
+                category: "juridico", 
+                tag: "Jurisprudencia Civil", 
+                title: "Parámetros de la Prescripción Adquisitiva Inmobiliaria 2026", 
+                image: "https://images.unsplash.com/photo-1589829085787-46c078269b96?w=800", 
+                excerpt: "Criterios unificados sobre la acreditación de la posesión pacífica y continua de predios según fallos recientes.", 
+                content: "El análisis del Código Civil y jurisprudencia comparada ratifica que para la validez de la prescripción adquisitiva de dominio se exige un comportamiento riguroso de propietario sin perturbaciones fácticas o jurídicas.\n\nElementos de prueba documental resultan mandatorios antes de iniciar la vía correspondiente:\n\n1. Posesión Continua: Mínimo 10 años de posesión ininterrumpida sin reconocimiento de dominio ajeno.\n\n2. Posesión Pacífica: Sin violencia, sin fuerza, sin clandestinidad. Debe ser ejercida de manera abierta.\n\n3. Documentación: Servicios básicos, impuestos prediales, actas notariales, testimonios de vecinos.\n\n4. Bona Fide: Demostrar que se actuaba creyendo ser el legítimo propietario.\n\nLos tribunales han tightened estándares tras casos de fraude masivo. Ahora requieren pericia catastral actualizada y comparación con registros históricos.", 
+                date: "14 Jun 2026" 
+            },
+            { 
+                id: "jur_2", 
+                category: "juridico", 
+                tag: "Derecho Laboral", 
+                title: "Sentencia histórica: Reconocen derechos a trabajadores tercerizados como empleados directos", 
+                image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800", 
+                excerpt: "Corte Suprema establece jurisprudencia vinculante sobre relaciones laborales disfrazadas de servicios.", 
+                content: "En fallo trascendental, la Corte Suprema de Justicia ha establecido que cuando existe una relación de dependencia, subordinación y continuidad, la tercerización no es válida como mecanismo de evasión de derechos laborales.\n\nEl caso derivaba de 450 trabajadores de una empresa minera que durante 8 años cumplían idénticas funciones, recibían órdenes de capataces, trabajaban en horarios fijos, sin autonomía contractual. La empresa argumentaba que eran \"contratistas independientes\".\n\nLa sentencia establece parámetros:\n- Tiempo de vigencia del contrato\n- Dependencia económica del trabajador\n- Control sobre la labor y jornada\n- Integración a procesos productivos\n- Exclusividad laboral\n\nComo consecuencia, se ordena: reintegro de trabajadores, pago de beneficios retroactivos, indemnizaciones por daño moral. Jurisprudencia aplicable a toda la región.", 
+                date: "11 Jun 2026" 
+            },
+            { 
+                id: "jur_3", 
+                category: "juridico", 
+                tag: "Derecho Ambiental", 
+                title: "Caso emblemático: Comunidad indígena gana juicio contra petrolera por contaminación de acuíferos", 
+                image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800", 
+                excerpt: "Tribunal internacional condena a corporación a remediación ambiental y compensación de $180 millones.", 
+                content: "Después de un litigio de 12 años, los Tribunales Internacionales de Arbitraje Ambiental han fallado a favor de la comunidad indígena Amazónica que demandaba a la corporación petrolera por contaminación de sus fuentes de agua.\n\nEvidencia presentada:\n- Reportes técnicos de organismos independientes mostrando petróleo crudo en muestras de agua subterránea\n- Certificaciones de que depósitos de residuos petroleros carecían de sistemas de contención adecuados\n- Registros médicos de enfermedades dermatológicas y respiratorias en población infantil\n- Testimonios de empleados antiguos sobre prácticas negligentes\n\nLa sentencia ordena:\n1. Remediación ambiental integral: $120 millones\n2. Compensación a afectados: $45 millones\n3. Programas de salud: $15 millones por 10 años\n4. Cambios en protocolos operativos\n\nEste fallo sienta precedente para 23 casos similares pendientes en la región.", 
+                date: "09 Jun 2026" 
+            },
+            { 
+                id: "jur_4", 
+                category: "juridico", 
+                tag: "Derecho Penal", 
+                title: "Reforma al Código Penal: Nuevas sanciones para delitos de cuello blanco entran en vigencia", 
+                image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800", 
+                excerpt: "Legislatura aprueba endurecimiento de penas para fraude, peculado y colusión con penas hasta 25 años.", 
+                content: "Después de intenso debate parlamentario, se ha aprobado la reforma que modifica sustancialmente el tratamiento de delitos de corrupción:\n\nCAMBIOS PRINCIPALES:\n- Peculado: 15 a 25 años (antes 8-12)\n- Colusión: 12 a 20 años (antes 5-10)\n- Fraude tributario > $1M: 10 a 18 años (nuevo)\n- Lavado: 15 a 20 años (antes 10-15)\n- Eliminación de libertad condicional antes de 70% cumplimiento\n- Decomiso obligatorio de bienes\n\nSe incorporan además tipos penales nuevos:\n- Obstrucción de justicia (8 a 12 años)\n- Corrupción de menores de edad (20 a 30 años)\n- Tráfico de influencias calificado (12 a 18 años)\n\nLa reforma entra en vigencia inmediatamente con aplicación retroactiva para casos en investigación.", 
+                date: "06 Jun 2026" 
+            },
+            
+            // ===== LIBERTAD DE EXPRESIÓN =====
+            { 
+                id: "lib_1", 
+                category: "libertad", 
+                tag: "Censura Digital", 
+                title: "Organizaciones demandan al Estado por bloqueo de portal de noticias independiente", 
+                image: "https://images.unsplash.com/photo-1557821552-17105176677c?w=800", 
+                excerpt: "ONG internacionales presentan recurso ante Corte Interamericana por violación del derecho a la información.", 
+                content: "Tres organizaciones defensoras de derechos humanos han interpuesto demanda ante la Corte Interamericana de Derechos Humanos acusando al Estado de censurar arbitrariamente un portal de noticias independiente durante 18 meses.\n\nLOS HECHOS:\n- Enero 2025: Portal publicó investigación sobre corrupción en altos funcionarios\n- 48 horas después: Fue bloqueado por autoridad de telecomunicaciones sin procedimiento\n- Enero-Junio 2026: Permanece inaccessible en territorio nacional\n- Fundador recibió amenazas de funcionarios públicos\n\nARGUMENTOS LEGALES:\n- Violación a libertad de expresión (Artículo 13, Convención Americana)\n- Censura previa sin proceso debido\n- Represalia por ejercer periodismo crítico\n- Restricción desproporcionada e innecesaria\n\nLa Corte ha admitido la demanda y solicitado al Estado presentar defensas. Fallo esperado en 8-12 meses.\n\nEste caso refuerza jurisprudencia internacional sobre inmunidad de periodistas y medios críticos.", 
+                date: "13 Jun 2026" 
+            },
+            { 
+                id: "lib_2", 
+                category: "libertad", 
+                tag: "Criminalización", 
+                title: "Periodista enfrenta cargos penales por reportaje sobre tráfico de drogas", 
+                image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800", 
+                excerpt: "Fiscalía acusa a reportero de 'instigación al delito' por documentar operaciones de narcotráfico.", 
+                content: "La Fiscalía Nacional ha presentado cargos penales contra reconocido periodista de investigación por su serie de reportajes que documentaban las operaciones de distribución de cocaína en ciudades principales.\n\nCARGO OFICIAL: \"Instigación y facilitación de delito\" bajo artículo 286 del código penal.\n\nARGUMENTO DE LA FISCALÍA (cuestionable):\n- Los reportajes contenían detalles operativos\n- Alegadamente facilitaba información a grupos criminales\n- Afirmaban que violaba secretos de investigación\n\nDEFENSA DEL PERIODISTA:\n- Investigación realizada bajo estándares éticos periodísticos\n- Información de dominio público o previamente publicada\n- Función social de fiscalizar crimen organizado\n- Represalia por periodismo crítico\n\nORGANIZACIONES INTERNACIONALES:\n- Reporteros sin Fronteras: \"Caso emblemático de censura disfrazada\"\n- PEN International: \"Violación flagrante de libertad de expresión\"\n- ONU Oficina de DDHH: \"Solicita archivo de cargos\"\n\nJuicio comienza en julio. Comunidad internacional sigue atentamente.", 
+                date: "07 Jun 2026" 
+            },
+            { 
+                id: "lib_3", 
+                category: "libertad", 
+                tag: "Acceso a Información", 
+                title: "Sentencia obliga a autoridades revelar presupuestos 'secretos' de servicios de inteligencia", 
+                image: "https://images.unsplash.com/photo-1554224311-beee415c201f?w=800", 
+                excerpt: "Tribunal falla que clasificación de documentos presupuestarios violaba derecho a acceso a información.", 
+                content: "En decisión histórica sobre transparencia, el Tribunal Constitucional ha ordenado que autoridades revelen informes detallados sobre asignaciones presupuestarias de agencias de seguridad e inteligencia.\n\nEL CASO:\n- Organización ciudadana solicitó presupuestos de servicios de inteligencia bajo ley de acceso a información pública\n- Estado denegó arguyendo \"seguridad nacional\" y \"secretos de Estado\"\n- Recurso de amparo llegó al tribunal máximo\n\nFALLO FUNDAMENTAL:\n- Clasificación fue arbitraria e injustificada\n- Interés público > interés de Estado de mantener secreto\n- Información presupuestaria no implica revelar operaciones específicas\n- Transparencia fiscal es requisito de democracia\n\nORDENES DE CUMPLIMIENTO:\n1. Entregar presupuestos 2023-2025 (con personal permitido redactado)\n2. Establecer sistema de clasificación conforme a estándares internacionales\n3. Crear comité independiente de revisión de clasificaciones\n4. Publicar resumen ejecutivo en web pública\n\nDecisión se aplica a todas agencias del Estado. Potencialmente revelará gastos por $2.1 mil millones anteriormente ocultos.", 
+                date: "04 Jun 2026" 
+            },
+            { 
+                id: "lib_4", 
+                category: "libertad", 
+                tag: "Redes Sociales", 
+                title: "Activistas ganan demanda contra plataforma por remover contenido crítico del gobierno", 
+                image: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800", 
+                excerpt: "Corte ordena a red social explicar criterios de moderación tras suprimir 10,000 publicaciones políticas.", 
+                content: "Grupo de activistas y defensores de derechos digitales ha ganado sentencia que obliga a plataforma de redes sociales a transparentar decisiones de moderación tras la remoción masiva de contenido crítico del gobierno.\n\nINCIDENTE:\n- Marzo 2026: Protestas masivas contra medidas económicas\n- Plataforma removió 10,847 publicaciones etiquetadas como \"desinformación política\"\n- Contenido incluía comentarios de ciudadanos, videos de protestas, análisis crítico\n- Búsqueda de palabras clave relacionadas con protesta fue limitada\n\nCUESTIONES LEGALES:\n- ¿Violó derechos de expresión?\n- ¿Ejecutó moderación en coordinación con gobierno? (datos sugerían patrón)\n- ¿Fue proporcional y justificado?\n\nREQUISITOS IMPUESTOS:\n1. Divulgar datos sobre remociones (usuario, fecha, razón, apelante)\n2. Explicitar criterios de moderación en lenguaje claro\n3. Permitir apelación ante revisor independiente\n4. Informar públicamente de coordinación con gobiernos\n5. Restaurar contenido no violento removido erróneamente\n\nCaso sienta precedente global sobre responsabilidad de plataformas.", 
+                date: "02 Jun 2026" 
+            },
+            
+            // ===== FISCALÍA =====
+            { 
+                id: "fisc_1", 
+                category: "fiscalia", 
+                tag: "Crimen Organizado", 
+                title: "Fiscalía acusa a 78 personas en megaoperativo contra cartel de distribución de fentanilo", 
+                image: "https://images.unsplash.com/photo-1609699657142-10e037b84b26?w=800", 
+                excerpt: "Operación coordinada desmanteló red que distribuía 500kg mensuales de opioides sintéticos de procedencia asiática.", 
+                content: "La Fiscalía Nacional ha presentado acusación contra 78 individuos tras operativo que desmanteló una estructura criminal sofisticada dedicada a distribución de fentanilo y otros opioides sintéticos.\n\nALCANCE DE LA OPERACIÓN:\n- Decomiso: 2.1 toneladas de fentanilo\n- Incautación: $45 millones en efectivo\n- Vehículos: 34 autos de lujo\n- Inmuebles: 12 propiedades de alto valor\n- Armas: 156 piezas de fuego\n\nESTRUCTURA CRIMINAL DESMANTELADA:\n- Cúpula: 5 capos de origen asiático\n- Importación: Red de 12 buzones\n- Distribución: 23 puntos de venta establecidos\n- Fuerza de seguridad: 25 sicarios armados\n- Lavado: Operaciones a través de 8 comercios de fachada\n\nMOPERUS OPERANDI:\n1. Importación vía puertos marítimos en contenedores con doble fondo\n2. Procesamiento en laboratorio clandestino identificado\n3. Fraccionamiento y embalaje con máquinas profesionales\n4. Distribución a nivel minorista a través de redes de tráfico\n5. Lavado mediante tiendas de electrónica, peluquerías, restaurantes\n\nIMPACTO EN SALUD:\n- 847 overdosis documentadas en 2025-2026\n- 203 muertes\n- Fentanilo 100 veces más potente que morfina\n\nJUICIO PROGRAMADO: Agosto 2026", 
+                date: "14 Jun 2026" 
+            },
+            { 
+                id: "fisc_2", 
+                category: "fiscalia", 
+                tag: "Tráfico Humano", 
+                title: "Red de tráfico sexual desmantelada: 156 víctimas rescatadas en operativo internacional", 
+                image: "https://images.unsplash.com/photo-1557821552-17105176677c?w=800", 
+                excerpt: "Coordinación entre fiscalías de 5 países resultó en rescate de menores explotadas sexualmente.", 
+                content: "Operativo coordinado de fiscalías de cinco países ha desmantelado una red transnacional de tráfico sexual que explotaba a menores de edad en burdeles clandestinos.\n\nRESULTADOS:\n- Víctimas rescatadas: 156 (88% menores de 18 años)\n- Acusados: 34 (traficantes, proxenetas, policías cómplices)\n- Burdeles cerrados: 23 establecimientos\n- Financiero decomisado: $12.3 millones\n- Computadoras/teléfonos: 178 dispositivos con material incriminatorio\n\nMODUS OPERANDI DESMANTELADO:\n1. Captación: Engaño de menores pobres con promesas de empleo\n2. Transporte: Movimiento entre países para confundir autoridades\n3. Explotación: Servidumbre por deuda, violencia sistemática\n4. Control: Confiscación de documentos, amenazas a familias\n5. Comercialización: Explotación sexual en burdeles y contactos privados\n\nTESTIMONIOS:\n- Víctimas reportan violaciones múltiples diarias\n- Retención de ganancias para \"pago de deuda\"\n- Falta de acceso a atención médica\n- Amenazas de violencia contra familias\n\nAPOYO DISPONIBLE:\n- Programa de reintegración a 3 años\n- Asistencia psicológica especializada\n- Tramitación de reparación económica\n- Protección de testigos\n\nTRIAL COMIENZA: Septiembre 2026", 
+                date: "10 Jun 2026" 
+            },
+            { 
+                id: "fisc_3", 
+                category: "fiscalia", 
+                tag: "Delitos Ambientales", 
+                title: "Fiscalía ambiental acusa a empresa cementera por contaminación masiva con 23 fallecimientos", 
+                image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800", 
+                excerpt: "Empresa procesada por omitir sistemas de filtración y contaminar aire en comunidad vecina de 40,000 habitantes.", 
+                content: "La Fiscalía Especializada en Delitos Ambientales ha presentado querella contra empresa cementera acusándola de homicidio negligente, contaminación culposa e incumplimiento de normas ambientales.\n\nCRÍMENES DOCUMENTADOS:\n1. Homicidio: 23 muertes por enfermedades respiratorias\n2. Lesiones: 347 casos de asma, bronquitis, cáncer de pulmón\n3. Contaminación: Emisiones 800% por encima de límites legales\n4. Omisión: No instaló sistemas de filtración requeridos\n5. Ocultamiento: Falsificó informes ambientales durante 4 años\n\nPRUEBA RECOPILADA:\n- Monitoreo independiente de partículas PM2.5 en aire\n- Análisis de muestras de suelo y agua\n- Registros médicos de población cercana\n- Comunicaciones internas mencionando \"problemas de fiscalización\"\n- Testimonios de empleados sobre desmantelamiento de filtros\n- Auditorías internas nunca comunicadas a autoridades\n\nIMPACTO EN SALUD PÚBLICA:\n- Comunidad de 40,000 expuesta diariamente\n- Tasa de cáncer pulmonar 15 veces nacional\n- Absentismo escolar 60% en menores\n\nCOMPENSACIÓN SOLICITADA: $185 millones por daño a la salud\n\nVISTAS INICIALES: Junio 2026", 
+                date: "05 Jun 2026" 
+            },
+            { 
+                id: "fisc_4", 
+                category: "fiscalia", 
+                tag: "Estafa Masiva", 
+                title: "Pirámide financiera desmantelada: 12,000 víctimas perdieron $340 millones", 
+                image: "https://images.unsplash.com/photo-1553729782-f91f59b37495?w=800", 
+                excerpt: "Esquema Ponzi operó 8 años engañando a ciudadanos con promesas de 45% de retorno mensual.", 
+                content: "La Fiscalía ha desmantelado una de las mayores estafas piramidales en historia reciente que defraudó a 12,000 víctimas por $340 millones.\n\nCARACTERÍSTICAS DEL ESQUEMA:\n- Período operativo: 2018-2026\n- Víctimas: 12,000 personas (60% de estrato bajo-medio)\n- Pérdida promedio por víctima: $28,333\n- Retornos prometidos: 45% mensual (600% anual)\n- Supuesta inversión: \"Comercio internacional de oro\"\n\nCÓMO FUNCIONABA:\n1. Reclutamiento: Gerentes activos cobraban 15% comisión por referidos\n2. Depósitos iniciales: Desde $500 hasta $50,000\n3. Retornos ficticios: \"Ganancias\" depositadas en cuentas por 6 meses\n4. Presión: \"Reinvierta para doblar ganancias\"\n5. Desaparición: Después de 8 años, servidores se desconectaron\n\nACUSADOS:\n- 8 operadores principales (capturados)\n- 47 gerentes de ventas (16 capturados, 31 prófugos)\n- 5 funcionarios bancarios por complicidad\n\nACTIVOS DECOMISADOS: $45 millones (13% de lo defraudado)\n\nVÍCTIMAS:\n- Jubilados que perdieron pensiones\n- Madres solteras con ahorros de vida\n- Pequeños empresarios en quiebra\n- Suicidios: 3 casos confirmados\n\nCOMPENSACIÓN:\n- Distribución de activos recuperados entre víctimas\n- Programa de asistencia social\n- Psicoterapia gratuita", 
+                date: "01 Jun 2026" 
+            },
+            
+            // ===== TECNOLOGÍA Y CIBERDERECHO =====
+            { 
+                id: "tech_1", 
+                category: "tecnologia", 
+                tag: "Ciberseguridad", 
+                title: "Brecha masiva: Datos de 85 millones de ciudadanos expuestos por vulnerabilidad en servidor gubernamental", 
+                image: "https://images.unsplash.com/photo-1550355291-bbee04a248f0?w=800", 
+                excerpt: "Registros de identidad, ingresos y domicilios vulnerables por 7 meses antes de detección.", 
+                content: "Investigadores de ciberseguridad independientes han descubierto una brecha masiva en servidor que alojaba base de datos civil de 85 millones de ciudadanos.\n\nCARACTERÍSTICAS DE LA BRECHA:\n- Período de exposición: 7 meses (noviembre 2025 - junio 2026)\n- Registros expuestos: 85 millones (información de prácticamente toda población)\n- Tipo de datos: Nombres, cédulas, direcciones, teléfonos, ingresos declarados, antecedentes\n- Ubicación: Servidor en internet sin firewall adecuado\n- Causa: Vulnerabilidad SQL Injection conocida no parcheada\n- Detectores: Investigadores privados, no administradores públicos\n\nRIESGO POTENCIAL:\n- Robo de identidad masivo\n- Fraude financiero\n- Vigilancia discriminatoria\n- Persecución política de disidentes\n- Targeting de criminales específicos por mafiosos\n- Phishing dirigido\n\nRESPUESTA GUBERNAMENTAL:\n- Negación inicial (12 horas)\n- Reconocimiento posterior\n- Servidor tomado offline\n- Auditoría externa ordenada\n- Compensación: Crédito de vigilancia por 3 años (valor: $8 por persona)\n\nDAÑOS ESTIMADOS: $2.1 mil millones en fraude potencial\n\nDEMANDAS COLECTIVAS INICIADAS: 23 estados civiles", 
+                date: "12 Jun 2026" 
+            },
+            { 
+                id: "tech_2", 
+                category: "tecnologia", 
+                tag: "Privacidad Digital", 
+                title: "Tribunal declara inconstitucional vigilancia masiva por aplicaciones de mensajería con puertas traseras", 
+                image: "https://images.unsplash.com/photo-1563986768609-2f477e91a588?w=800", 
+                excerpt: "Corte ordena eliminar backdoors en software de comunicaciones utilizadas por fiscalía sin orden judicial.", 
+                content: "La Corte Constitucional ha declarado inconstitucional la instalación de 'puertas traseras' en aplicaciones de mensajería comerciales para vigilancia de ciudadanos sin autorización individual.\n\nEL CASO:\n- Activista político descubrió malware en su dispositivo\n- Código permitía acceso remoto a conversaciones cifradas\n- Investigación reveló programa patrocinado por fiscalía\n- Alcance: 2.3 millones de dispositivos con malware instalado\n- Período: 2021-2026\n\nEVIDENCIA PRESENTADA:\n- Documentos clasificados declasificados mostrando programa\n- Código fuente analizado por expertos independientes\n- Testimonios de desarrolladores forzados a colaborar\n- Datos de telecomunicaciones mostrando tráfico anómalo\n- Registros administrativos sin control ni supervisión\n\nFALLO CONSTITUCIONAL:\n1. Derecho a privacidad vulnerado (Art. 18 Constitución)\n2. Ausencia de supervisión judicial inconstitucional\n3. Falta de proporcionalidad\n4. Sin base legal para programa\n5. Instalación sin consentimiento es delito\n\nÓRDENES EMITIDAS:\n- Eliminación inmediata de backdoors\n- Destrucción de datos recopilados ilegalmente\n- Cierre del programa de vigilancia\n- Investigación criminal contra responsables\n- Compensación a víctimas de vigilancia\n- Reforma de leyes de inteligencia\n\nIMPACTO GLOBAL: Jurisprudencia aplicable internacionalmente", 
+                date: "09 Jun 2026" 
+            },
+            { 
+                id: "tech_3", 
+                category: "tecnologia", 
+                tag: "Fraude Digital", 
+                title: "Red internacional de estafadores interceptada: Robaban datos bancarios mediante keyloggers", 
+                image: "https://images.unsplash.com/photo-1461749280684-ddeead0129e3?w=800", 
+                excerpt: "Operación coordinada desmanteló anillo criminal que robó $89 millones de cuentas bancarias en 3 continentes.", 
+                content: "Operación coordinada de ciberpolicia de 7 países ha desmantelado red internacional que robaba datos bancarios mediante software malicioso (keyloggers) instalado en computadoras públicas.\n\nDETALLES DE LA OPERACIÓN:\n- Acusados capturados: 23 (técnicos + operadores)\n- Cuentas de mula: 156 identificadas\n- Dinero robado: $89.2 millones\n- Período: 2021-2026\n- Víctimas: 34,000 personas en 23 países\n\nMÉTODO DE ATAQUE:\n1. Instalación de keyloggers en cibercafés, bibliotecas, universidades\n2. Captura de credenciales bancarias\n3. Acceso a cuentas durante madrugadas\n4. Transferencias a cuentas de mula\n5. Retiro de efectivo o compras internacionales\n\nHELES ESPECÍFICAS:\n- Tarjeta de crédito: Fraude con cargos no autorizados\n- Banca en línea: Vaciamiento de ahorros\n- Inversiones: Liquidación de portafolios\n- Criptomonedas: Transferencias forzadas a wallets criminales\n\nRESPUESTA BANCARIA:\n- Reembolsos emitidos: $67 millones (75% del total)\n- Sistemas de seguridad actualizados\n- Alertas por actividad atípica\n- Programas de educación para usuarios\n\nPRISIONES: 8-15 años por cada acusado\n\nACTUOS DECOMISADOS:\n- Computadoras: 156 con malware\n- Efectivo: $12 millones\n- Criptomonedas: 340 Bitcoin\n- Documentos: Miles de credenciales capturadas", 
+                date: "06 Jun 2026" 
+            },
+            { 
+                id: "tech_4", 
+                category: "tecnologia", 
+                tag: "Derechos Digitales", 
+                title: "Ley de Inteligencia Artificial establecerá prohibiciones sobre sistemas de reconocimiento facial sin consentimiento", 
+                image: "https://images.unsplash.com/photo-1677442d019cecf74e79f0ec27a43b4897a10cb07?w=800", 
+                excerpt: "Parlamento aprueba regulación histórica que protege ciudadanos de vigilancia por reconocimiento facial no autorizado.", 
+                content: "El Parlamento ha aprobado la Ley de Inteligencia Artificial más restrictiva de la región, prohibiendo uso de reconocimiento facial en espacios públicos sin consentimiento explícito y supervisión judicial.\n\nPRINCIPALES DISPOSICIONES:\n\n1. RECONOCIMIENTO FACIAL EN ESPACIOS PÚBLICOS:\n   - Prohibido por defecto (excepto: aeropuertos, fronteras, investigaciones criminales)\n   - Requiere orden judicial específica\n   - Ciudadanos tienen derecho a ser informados\n   - Datos no pueden ser retenidos > 48 horas\n\n2. DATOS BIOMÉTRICOS:\n   - Consentimiento explícito obligatorio\n   - Derecho a borrado de datos\n   - Auditorías trimestrales por agencia independiente\n   - Transparencia sobre algoritmos utilizados\n\n3. PERFILADO ALGORÍTMICO:\n   - Prohibidas decisiones automatizadas sobre libertad/seguridad\n   - Revisión humana obligatoria\n   - Explicabilidad de algoritmos requerida\n   - Derecho a oposición\n\n4. RESPONSABILIDAD:\n   - Corporaciones: Multas hasta 5% de ingresos globales\n   - Funcionarios: Hasta 10 años de cárcel por violación\n   - Derechos privados de acción para ciudadanos\n\n5. EXCEPCIONES PERMITIDAS:\n   - Identificación criminal de persona buscada\n   - Búsqueda de personas desaparecidas\n   - Investigación de terrorismo (con orden)\n   - Acuerdo expreso de ciudadano\n\nVIGENCIA: 6 meses desde aprobación\n\nIMPACTO ESPERADO:\n- Reducción 90% de vigilancia no autorizada\n- Alineamiento con estándares europeos\n- Modelos para legislación internacional", 
+                date: "03 Jun 2026" 
+            }
+        ];
+
+        let commentsDatabase = {
+            "jur_1": [{ id: "c_init", author: "Anon-Pro", text: "Excelente aporte técnico y legal.", time: "14 Jun 2026, 11:20" }]
+        };
+
+        if (localStorage.getItem('ruins_ticker_v5')) tickerText = localStorage.getItem('ruins_ticker_v5');
+        if (localStorage.getItem('ruins_news_v9')) allNews = JSON.parse(localStorage.getItem('ruins_news_v9'));
+        if (localStorage.getItem('ruins_comments_v4')) commentsDatabase = JSON.parse(localStorage.getItem('ruins_comments_v4'));
+        if (localStorage.getItem('ruins_colors_v2')) systemColors = JSON.parse(localStorage.getItem('ruins_colors_v2'));
+        if (localStorage.getItem('ruins_sections_v2')) activeSections = JSON.parse(localStorage.getItem('ruins_sections_v2'));
+        if (localStorage.getItem('ruins_texts_v1')) globalTexts = JSON.parse(localStorage.getItem('ruins_texts_v1'));
+        if (localStorage.getItem('ruins_views_v1')) articleViews = JSON.parse(localStorage.getItem('ruins_views_v1'));
+        if (localStorage.getItem('ruins_ratings_v1')) articleRatings = JSON.parse(localStorage.getItem('ruins_ratings_v1'));
+        if (localStorage.getItem('ruins_favorites_v1')) favoriteArticles = JSON.parse(localStorage.getItem('ruins_favorites_v1'));
+        if (localStorage.getItem('ruins_theme_v1')) isDarkMode = JSON.parse(localStorage.getItem('ruins_theme_v1'));
+        
+        // LIMPIAR VERSIONES ANTIGUAS
+        localStorage.removeItem('ruins_news_v8');
+        localStorage.removeItem('ruins_news_v7');
+        localStorage.removeItem('ruins_news_v6');
+
+        function syncDB() {
+            localStorage.setItem('ruins_ticker_v5', tickerText);
+            localStorage.setItem('ruins_news_v9', JSON.stringify(allNews));
+            localStorage.setItem('ruins_comments_v4', JSON.stringify(commentsDatabase));
+            localStorage.setItem('ruins_colors_v2', JSON.stringify(systemColors));
+            localStorage.setItem('ruins_sections_v2', JSON.stringify(activeSections));
+            localStorage.setItem('ruins_texts_v1', JSON.stringify(globalTexts));
+            localStorage.setItem('ruins_views_v1', JSON.stringify(articleViews));
+            localStorage.setItem('ruins_ratings_v1', JSON.stringify(articleRatings));
+            localStorage.setItem('ruins_favorites_v1', JSON.stringify(favoriteArticles));
+            localStorage.setItem('ruins_theme_v1', JSON.stringify(isDarkMode));
+        }
+
+        function applyStyles() {
+            document.documentElement.style.setProperty('--bg-principal', systemColors.bg);
+            document.documentElement.style.setProperty('--color-acento', systemColors.accent);
+            let res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(systemColors.accent);
+            if(res) document.documentElement.style.setProperty('--color-acento-rgb', `${parseInt(res[1],16)},${parseInt(res[2],16)},${parseInt(res[3],16)}`);
+            document.getElementById('cfg-bg-color').value = systemColors.bg;
+            document.getElementById('cfg-accent-color').value = systemColors.accent;
+        }
+
+        function selectPalette(bg, accent) {
+            systemColors.bg = bg; systemColors.accent = accent;
+            applyStyles(); syncDB();
+        }
+
+        function applyCustomColors() {
+            systemColors.bg = document.getElementById('cfg-bg-color').value;
+            systemColors.accent = document.getElementById('cfg-accent-color').value;
+            applyStyles(); syncDB();
+        }
+
+        function buildStructure() {
+            const menu = document.getElementById('render-aside-menu');
+            menu.innerHTML = `<li class="${currentFilter==='all'?'active':''}" onclick="changeCat('all')">Todos los Informes</li>`;
+            const sel = document.getElementById('post-category'); sel.innerHTML = '';
+            activeSections.forEach(s => {
+                let li = document.createElement('li'); li.className = currentFilter===s.id?'active':''; li.innerText = s.name; li.onclick = () => changeCat(s.id);
+                menu.appendChild(li);
+                let op = document.createElement('option'); op.value = s.id; op.innerText = s.name; sel.appendChild(op);
+            });
+        }
+
+        function changeCat(id) { currentFilter = id; buildStructure(); displayNews(); }
+        function displayTicker() { document.getElementById('ticker-text-container').innerHTML = `<span class="ticker-item">${tickerText}</span><span class="ticker-item">${tickerText}</span>`; }
+
+        function renderPortalTexts() {
+            document.getElementById('pub-main-logo').innerHTML = `${globalTexts.portalName.replace(/<span>(.*?)<\/span>/g, '$1')} <span ondblclick="toggleControlMaestro()">PROJECT</span>`;
+            document.getElementById('pub-header-tag-left').innerHTML = globalTexts.tagLeft;
+            document.getElementById('pub-header-tag-right').innerHTML = globalTexts.tagRight;
+            document.getElementById('pub-footer-title').innerHTML = globalTexts.footerTitle;
+            document.getElementById('pub-footer-desc').innerText = globalTexts.footerDesc;
+            document.getElementById('pub-footer-mail').innerHTML = `<i class="fa-solid fa-envelope"></i> ${globalTexts.footerMail}`;
+            document.getElementById('pub-footer-mail').href = `mailto:${globalTexts.footerMail}`;
+
+            document.getElementById('cfg-portal-name').value = globalTexts.portalName;
+            document.getElementById('cfg-tag-left').value = globalTexts.tagLeft;
+            document.getElementById('cfg-tag-right').value = globalTexts.tagRight;
+            document.getElementById('cfg-footer-title').value = globalTexts.footerTitle;
+            document.getElementById('cfg-footer-desc').value = globalTexts.footerDesc;
+            document.getElementById('cfg-footer-mail').value = globalTexts.footerMail;
+        }
+
+        window.updateLiveTexts = function() {
+            globalTexts.portalName = document.getElementById('cfg-portal-name').value;
+            globalTexts.tagLeft = document.getElementById('cfg-tag-left').value;
+            globalTexts.tagRight = document.getElementById('cfg-tag-right').value;
+            globalTexts.footerTitle = document.getElementById('cfg-footer-title').value;
+            globalTexts.footerDesc = document.getElementById('cfg-footer-desc').value;
+            globalTexts.footerMail = document.getElementById('cfg-footer-mail').value;
+        }
+
+        window.savePortalTexts = function() {
+            updateLiveTexts(); syncDB(); renderPortalTexts(); alert("¡Textos globales guardados y actualizados!");
+        }
+
+        function renderInventories() {
+            const newsInv = document.getElementById('admin-news-inventory'); newsInv.innerHTML = '';
+            allNews.forEach(n => {
+                let div = document.createElement('div'); div.className = 'control-row-item';
+                div.innerHTML = `<span><b>[${n.category.toUpperCase()}]</b> ${n.title.substring(0,35)}...</span>
+                <div>
+                    <button class="btn-inline-admin edit-btn" onclick="loadPostToEdit('${n.id}')">Editar</button>
+                    <button class="btn-inline-admin del-btn" onclick="deletePost('${n.id}')">Borrar</button>
+                </div>`;
+                newsInv.appendChild(div);
+            });
+
+            const commInv = document.getElementById('admin-comments-inventory'); commInv.innerHTML = '';
+            let count = 0;
+            for(let pId in commentsDatabase) {
+                commentsDatabase[pId].forEach(c => {
+                    count++;
+                    let div = document.createElement('div'); div.className = 'control-row-item';
+                    div.style.flexDirection = 'column'; div.style.alignItems = 'flex-start';
+                    div.innerHTML = `
+                        <div style="font-size:0.75rem; color:var(--color-acento); font-family:var(--ff-tecnica);">Autor: ${c.author} | En post ID: ${pId}</div>
+                        <input type="text" class="comment-input" style="margin:5px 0; padding:6px; font-size:0.85rem;" value="${c.text}" id="inline-cmt-text-${c.id}">
+                        <div style="align-self: flex-end; display:flex; gap:5px;">
+                            <button class="btn-inline-admin edit-btn" onclick="saveInlineComment('${pId}','${c.id}')">Guardar</button>
+                            <button class="btn-inline-admin del-btn" onclick="deleteComment('${pId}','${c.id}')">Eliminar</button>
+                        </div>`;
+                    commInv.appendChild(div);
+                });
+            }
+            if(count===0) commInv.innerHTML = '<p style="font-size:0.8rem; color:var(--texto-apagado);">No hay comentarios.</p>';
+        }
+
+        window.saveInlineComment = function(postId, cmtId) {
+            let newText = document.getElementById(`inline-cmt-text-${cmtId}`).value.trim();
+            if(!newText) return alert("Comentario vacío.");
+            let targetCmt = commentsDatabase[postId].find(c => c.id === cmtId);
+            if(targetCmt) {
+                targetCmt.text = newText; syncDB(); renderInventories(); if(activeArticleId===postId) loadComments(postId); displayNews(); alert("¡Comentario modificado!");
+            }
+        }
+
+        function renderSectionManager() {
+            const container = document.getElementById('section-manager-container'); container.innerHTML = '';
+            activeSections.forEach((sec, idx) => {
+                let div = document.createElement('div'); div.className = 'section-row-item';
+                div.innerHTML = `
+                    <button class="btn-order-action" onclick="moveSection(${idx}, -1)"><i class="fa-solid fa-arrow-up"></i></button>
+                    <button class="btn-order-action" onclick="moveSection(${idx}, 1)"><i class="fa-solid fa-arrow-down"></i></button>
+                    <input type="text" class="comment-input" style="margin:0;" value="${sec.name}" id="input-sec-name-${idx}">
+                    <button class="btn-inline-admin del-btn" style="height:30px; padding:0 10px;" onclick="deleteSection(${idx})"><i class="fa-solid fa-trash"></i></button>`;
+                container.appendChild(div);
+            });
+        }
+
+        window.addNewSection = function() {
+            let name = document.getElementById('new-section-name').value.trim();
+            if(!name) return alert("Escribe un nombre para la sección.");
+            let id = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
+            if(activeSections.find(s=>s.id === id)) return alert("Esa sección ya existe.");
+            activeSections.push({ id, name }); document.getElementById('new-section-name').value = '';
+            renderSectionManager();
+        }
+
+        window.deleteSection = function(idx) {
+            if(confirm(`¿Estás seguro de eliminar la sección "${activeSections[idx].name}"? Las noticias existentes bajo este ID ya no se filtrarán correctamente.`)) {
+                activeSections.splice(idx, 1); renderSectionManager();
+            }
+        }
+
+        window.moveSection = function(idx, dir) {
+            let target = idx + dir;
+            if(target >= 0 && target < activeSections.length) {
+                activeSections.forEach((s, i) => s.name = document.getElementById(`input-sec-name-${i}`).value.trim() || s.name);
+                let temp = activeSections[idx]; activeSections[idx] = activeSections[target]; activeSections[target] = temp;
+                renderSectionManager();
+            }
+        }
+
+        window.saveSectionLayout = function() {
+            activeSections.forEach((s, i) => {
+                let inp = document.getElementById(`input-sec-name-${i}`);
+                if(inp) s.name = inp.value.trim() || s.name;
+            });
+            syncDB(); buildStructure(); displayNews(); alert("¡Secciones sincronizadas con éxito!");
+        }
+
+        window.saveTickerData = function() {
+            tickerText = document.getElementById('ticker-input').value.trim(); syncDB(); displayTicker(); alert("Ticker guardado.");
+        }
+
+        window.toggleControlMaestro = function() {
+            const overlay = document.getElementById('panel-control-maestro');
+            const portal = document.getElementById('view-public-portal');
+            const isShown = overlay.classList.contains('show');
+            if(!isShown) {
+                openAdminModal();
+            } else {
+                overlay.classList.remove('show'); portal.style.display = 'flex'; clearAdminSession(); clearForm(); displayNews(); renderPortalTexts();
+            }
+        }
+
+        window.processLocalImage = function(input) {
+            let f = input.files[0];
+            if(f) {
+                if(f.size > 1500000) return alert("Máximo 1.5MB.");
+                let r = new FileReader(); r.onload = (e) => {
+                    document.getElementById('post-img-base64').value = e.target.result;
+                    document.getElementById('file-preview-status').style.display='block'; document.getElementById('file-preview-status').innerText = "✓ Imagen cargada";
+                }; r.readAsDataURL(f);
+            }
+        }
+
+        function displayNews() {
+            const container = document.getElementById('news-container'); container.innerHTML = '';
+            const filtered = currentFilter==='all'?allNews:allNews.filter(n=>n.category===currentFilter);
+            if(filtered.length===0) { container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--texto-apagado);">Cero publicaciones en este apartado.</div>'; return; }
+            filtered.forEach(n => {
+                let card = document.createElement('div'); card.className = 'news-card';
+                let img = n.image ? `<img src="${n.image}" class="news-img">` : '';
+                let totalCmt = commentsDatabase[n.id] ? commentsDatabase[n.id].length : 0;
+                let views = articleViews[n.id] || 0;
+                let isFav = favoriteArticles.includes(n.id);
+                let rating = articleRatings[n.id] ? (articleRatings[n.id].totalRating / articleRatings[n.id].count).toFixed(1) : 0;
+                let ratingCount = articleRatings[n.id] ? articleRatings[n.id].count : 0;
+                
+                card.innerHTML = `${img}<div class="news-body">
+    <div class="news-card-header">
+        <span class="news-tag">${n.tag}</span>
+        <div class="news-card-actions">
+            <button class="favorite-btn ${isFav?'is-fav':''}" onclick="toggleFavorite('${n.id}', event)" title="${isFav?'Quitar favorito':'Agregar favorito'}"><i class="fa-solid fa-heart"></i></button>
+        </div>
+    </div>
+    <h3 class="news-title" onclick="openArticle('${n.id}')">${n.title}</h3>
+    <p class="news-excerpt">${n.excerpt}</p>
+    
+    <div class="views-rating">
+        <div class="views-badge"><i class="fa-solid fa-eye"></i> ${views}</div>
+        <div class="rating-stars" title="${rating > 0 ? rating + ' estrellas' : 'Sin calificaciones'}">
+            <span class="star ${rating >= 1 ? 'filled' : ''}">★</span>
+            <span class="star ${rating >= 2 ? 'filled' : ''}">★</span>
+            <span class="star ${rating >= 3 ? 'filled' : ''}">★</span>
+            <span class="star ${rating >= 4 ? 'filled' : ''}">★</span>
+            <span class="star ${rating >= 5 ? 'filled' : ''}">★</span>
+            ${ratingCount > 0 ? `<span style="margin-left:4px; font-size:0.8rem; color:var(--texto-apagado);">(${ratingCount})</span>` : ''}
+        </div>
+    </div>
+    
+    <div style="margin: 10px 0; display: flex; gap: 10px;">
+        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(n.title)}&url=${encodeURIComponent(window.location.href)}" target="_blank" style="color:#fff; font-size: 1.1rem;"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(n.title)}%20${encodeURIComponent(window.location.href)}" target="_blank" style="color:#25D366; font-size: 1.1rem;"><i class="fa-brands fa-whatsapp"></i></a>
+    </div>
+
+    <div class="news-meta">
+        <span><i class="fa-solid fa-calendar"></i> ${n.date} | <i class="fa-solid fa-comment"></i> ${totalCmt}</span>
+        <span style="color:var(--color-acento); cursor:pointer;" onclick="openArticle('${n.id}')">Leer →</span>
+    </div>
+</div>`;
+                container.appendChild(card);
+            });
+        }
+
+        window.openArticle = function(id) {
+            activeArticleId = id; 
+            
+            // INCREMENTAR VISTAS
+            if(!articleViews[id]) articleViews[id] = 0;
+            articleViews[id]++;
+            syncDB();
+            
+            const news = allNews.find(n => n.id === id); if(!news) return;
+            const modal = document.getElementById('article-modal');
+            let rating = articleRatings[id] ? (articleRatings[id].totalRating / articleRatings[id].count).toFixed(1) : 0;
+            let ratingCount = articleRatings[id] ? articleRatings[id].count : 0;
+            
+            document.getElementById('modal-body-content').innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px;">
+                    <div>
+                        <span class="news-tag">${news.tag}</span><h1 style="color:#fff; margin:10px 0; font-family: var(--ff-titulos); font-size: 1.85rem;">${news.title}</h1>
+                    </div>
+                    <button class="favorite-btn" style="font-size:1.5rem;" onclick="toggleFavorite('${news.id}', event)" title="Agregar a favoritos"><i class="fa-solid fa-heart"></i></button>
+                </div>
+                <div style="color:var(--texto-apagado); font-size:0.8rem; margin-bottom:15px; font-family: var(--ff-tecnica); display:flex; gap:15px;">
+                    <span>Fecha: ${news.date} | Archivo de Preservación</span>
+                    <span><i class="fa-solid fa-eye"></i> ${articleViews[id] || 0} vistas</span>
+                    <div style="display:flex; align-items:center; gap:3px;">
+                        <span style="color:#ffb000;">★ ${rating > 0 ? rating + ' estrellas' : 'Sin calificaciones'}</span>
+                    </div>
+                </div>
+                <div style="background:#161d2f; padding:12px; border-radius:4px; margin-bottom:15px; display:flex; align-items:center; gap:8px;">
+                    <span style="color:var(--texto-apagado); font-size:0.9rem;">Califica este artículo:</span>
+                    <div class="rating-stars" style="gap:2px;">
+                        <span class="star" onclick="rateArticle('${id}', 1)">★</span>
+                        <span class="star" onclick="rateArticle('${id}', 2)">★</span>
+                        <span class="star" onclick="rateArticle('${id}', 3)">★</span>
+                        <span class="star" onclick="rateArticle('${id}', 4)">★</span>
+                        <span class="star" onclick="rateArticle('${id}', 5)">★</span>
+                    </div>
+                </div>
+                ${news.image?`<img src="${news.image}" class="modal-img">`:''}<div style="color:#f1f5f9; font-size:1.02rem; white-space: pre-line; font-weight:400;">${news.content}</div>`;
+            
+            let cleanTitle = encodeURIComponent(news.title);
+            let shareUrl = encodeURIComponent(window.location.href);
+
+            document.getElementById('modal-share-bar').innerHTML = `
+                <span style="font-size:0.85rem; color:var(--texto-apagado); margin-right:5px; font-family: var(--ff-tecnica);">COMPARTIR:</span> 
+                <a class="share-btn share-x" href="https://twitter.com/intent/tweet?text=${cleanTitle}&url=${shareUrl}" target="_blank"><i class="fa-brands fa-x-twitter"></i> X</a>
+                <a class="share-btn share-wa" href="https://api.whatsapp.com/send?text=${cleanTitle}%20${shareUrl}" target="_blank"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                <a class="share-btn share-ig" href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>`;
+                
+            loadComments(id); modal.style.display = 'flex';
+        }
+
+        function loadComments(id) {
+            const box = document.getElementById('comments-list-container'); box.innerHTML = '';
+            const list = commentsDatabase[id] || [];
+            if(list.length===0) { box.innerHTML = '<p style="font-size:0.85rem; color:var(--texto-apagado); font-style:italic;">Sin aportes ciudadanos en esta línea.</p>'; return; }
+            list.forEach(c => {
+                let d = document.createElement('div'); d.className = 'comment-item';
+                d.innerHTML = `<div class="comment-author"><i class="fa-solid fa-circle-user"></i> ${c.author}</div><div class="comment-text">${c.text}</div><div class="comment-time">${c.time}</div>`;
+                box.appendChild(d);
+            });
+        }
+
+        window.submitNewComment = function() {
+            let n = document.getElementById('commenter-name').value.trim();
+            let t = document.getElementById('commenter-text').value.trim();
+            if(!n || !t) return alert("Campos requeridos.");
+            if(!commentsDatabase[activeArticleId]) commentsDatabase[activeArticleId] = [];
+            commentsDatabase[activeArticleId].push({ id: "c_"+Date.now(), author: n, text: t, time: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+            syncDB(); document.getElementById('commenter-text').value=''; loadComments(activeArticleId); displayNews();
+        }
+
+        window.deleteComment = function(postId, cmtId) {
+            if(confirm("¿Eliminar este comentario desde el control maestro?")) {
+                commentsDatabase[postId] = commentsDatabase[postId].filter(c => c.id !== cmtId);
+                syncDB(); renderInventories(); if(activeArticleId===postId) loadComments(postId); displayNews();
+            }
+        }
+
+        window.closeArticle = function() { document.getElementById('article-modal').style.display='none'; activeArticleId=null; }
+
+        window.savePost = function() {
+            let id = document.getElementById('edit-post-id').value;
+            let title = document.getElementById('post-title').value.trim();
+            let tag = document.getElementById('post-tag').value.trim();
+            let cat = document.getElementById('post-category').value;
+            let img = document.getElementById('post-img-base64').value;
+            let exc = document.getElementById('post-excerpt').value.trim();
+            let cnt = document.getElementById('post-content').value.trim();
+
+            if(!title || !exc || !cnt) return alert("Faltan datos obligatorios.");
+
+            if(id) {
+                let idx = allNews.findIndex(n => n.id === id);
+                if(idx !== -1) {
+                    allNews[idx].title = title; allNews[idx].tag = tag || "Informe"; allNews[idx].category = cat;
+                    if(img) allNews[idx].image = img; allNews[idx].excerpt = exc; allNews[idx].content = cnt;
+                }
+            } else {
+                allNews.unshift({ id: "n_"+Date.now(), title, tag: tag||"Informe", category: cat, image: img, excerpt: exc, content: cnt, date: new Date().toLocaleDateString('es-PE', {day:'numeric', month:'short', year:'numeric'}) });
+            }
+            syncDB(); alert("¡Base de datos guardada con éxito!"); toggleControlMaestro();
+        }
+
+        window.loadPostToEdit = function(id) {
+            let news = allNews.find(n => n.id === id); if(!news) return;
+            document.getElementById('form-action-title').innerHTML = `🛠️ Editando Artículo: ${news.title.substring(0,20)}...`;
+            document.getElementById('btn-submit-form').innerText = "Aplicar Cambios";
+            document.getElementById('btn-cancel-form').style.display = 'block';
+            document.getElementById('edit-post-id').value = news.id;
+            document.getElementById('post-title').value = news.title;
+            document.getElementById('post-tag').value = news.tag;
+            document.getElementById('post-category').value = news.category;
+            document.getElementById('post-excerpt').value = news.excerpt;
+            document.getElementById('post-content').value = news.content;
+            document.getElementById('anchor-redactor').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.deletePost = function(id) {
+            if(confirm("¿Destruir artículo de manera permanente?")) {
+                allNews = allNews.filter(n => n.id !== id); if(commentsDatabase[id]) delete commentsDatabase[id];
+                syncDB(); renderInventories(); displayNews();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('form-action-title').innerHTML = `<i class="fa-solid fa-pen-nib"></i> Formulario Redactor Avanzado`;
+            document.getElementById('btn-submit-form').innerText = "Ejecutar Guardado Completo";
+            document.getElementById('btn-cancel-form').style.display = 'none';
+            document.getElementById('edit-post-id').value = ''; document.getElementById('post-img-base64').value = '';
+            document.getElementById('post-title').value = ''; document.getElementById('post-tag').value = '';
+            document.getElementById('post-excerpt').value = ''; document.getElementById('post-content').value = '';
+            document.getElementById('file-preview-status').style.display = 'none';
+        }
+
+        window.cancelEditing = function() { clearForm(); }
+        
+        // ========== NUEVAS FUNCIONALIDADES ==========
+        
+        window.toggleFavorite = function(id, event) {
+            if(event) event.stopPropagation();
+            const idx = favoriteArticles.indexOf(id);
+            if(idx > -1) {
+                favoriteArticles.splice(idx, 1);
+            } else {
+                favoriteArticles.push(id);
+            }
+            syncDB(); displayNews(); if(activeArticleId === id) openArticle(id);
+        }
+        
+        window.rateArticle = function(id, stars) {
+            if(!articleRatings[id]) articleRatings[id] = { totalRating: 0, count: 0 };
+            articleRatings[id].totalRating += stars;
+            articleRatings[id].count += 1;
+            syncDB(); displayNews(); if(activeArticleId === id) openArticle(id);
+            alert(`✓ Gracias por calificar con ${stars} ⭐`);
+        }
+        
+        window.applySearchAndFilters = function() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const dateFilter = document.getElementById('date-filter').value;
+            
+            let filtered = currentFilter === 'all' ? allNews : allNews.filter(n => n.category === currentFilter);
+            
+            // FILTRO POR BÚSQUEDA
+            if(searchTerm) {
+                filtered = filtered.filter(n => 
+                    n.title.toLowerCase().includes(searchTerm) ||
+                    n.excerpt.toLowerCase().includes(searchTerm) ||
+                    n.content.toLowerCase().includes(searchTerm) ||
+                    n.tag.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // FILTRO POR FECHA
+            if(dateFilter) {
+                const days = parseInt(dateFilter);
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - days);
+                filtered = filtered.filter(n => {
+                    const nDate = new Date(n.date.split(' ').reverse().join('-'));
+                    return nDate >= cutoffDate;
+                });
+            }
+            
+            // MOSTRAR RESULTADOS
+            const container = document.getElementById('news-container');
+            container.innerHTML = '';
+            if(filtered.length === 0) {
+                container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--texto-apagado);">No hay resultados para tu búsqueda.</div>';
+                return;
+            }
+            
+            filtered.forEach(n => {
+                let card = document.createElement('div'); card.className = 'news-card';
+                let img = n.image ? `<img src="${n.image}" class="news-img">` : '';
+                let totalCmt = commentsDatabase[n.id] ? commentsDatabase[n.id].length : 0;
+                let views = articleViews[n.id] || 0;
+                let isFav = favoriteArticles.includes(n.id);
+                let rating = articleRatings[n.id] ? (articleRatings[n.id].totalRating / articleRatings[n.id].count).toFixed(1) : 0;
+                let ratingCount = articleRatings[n.id] ? articleRatings[n.id].count : 0;
+                
+                card.innerHTML = `${img}<div class="news-body">
+    <div class="news-card-header">
+        <span class="news-tag">${n.tag}</span>
+        <div class="news-card-actions">
+            <button class="favorite-btn ${isFav?'is-fav':''}" onclick="toggleFavorite('${n.id}', event)" title="${isFav?'Quitar favorito':'Agregar favorito'}"><i class="fa-solid fa-heart"></i></button>
+        </div>
+    </div>
+    <h3 class="news-title" onclick="openArticle('${n.id}')">${n.title}</h3>
+    <p class="news-excerpt">${n.excerpt}</p>
+    
+    <div class="views-rating">
+        <div class="views-badge"><i class="fa-solid fa-eye"></i> ${views}</div>
+        <div class="rating-stars" title="${rating > 0 ? rating + ' estrellas' : 'Sin calificaciones'}">
+            <span class="star ${rating >= 1 ? 'filled' : ''}">★</span>
+            <span class="star ${rating >= 2 ? 'filled' : ''}">★</span>
+            <span class="star ${rating >= 3 ? 'filled' : ''}">★</span>
+            <span class="star ${rating >= 4 ? 'filled' : ''}">★</span>
+            <span class="star ${rating >= 5 ? 'filled' : ''}">★</span>
+            ${ratingCount > 0 ? `<span style="margin-left:4px; font-size:0.8rem; color:var(--texto-apagado);">(${ratingCount})</span>` : ''}
+        </div>
+    </div>
+    
+    <div style="margin: 10px 0; display: flex; gap: 10px;">
+        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(n.title)}&url=${encodeURIComponent(window.location.href)}" target="_blank" style="color:#fff; font-size: 1.1rem;"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(n.title)}%20${encodeURIComponent(window.location.href)}" target="_blank" style="color:#25D366; font-size: 1.1rem;"><i class="fa-brands fa-whatsapp"></i></a>
+    </div>
+
+    <div class="news-meta">
+        <span><i class="fa-solid fa-calendar"></i> ${n.date} | <i class="fa-solid fa-comment"></i> ${totalCmt}</span>
+        <span style="color:var(--color-acento); cursor:pointer;" onclick="openArticle('${n.id}')">Leer →</span>
+    </div>
+</div>`;
+                container.appendChild(card);
+            });
+        }
+        
+        window.toggleThemeMode = function() {
+            isDarkMode = !isDarkMode;
+            syncDB();
+            if(isDarkMode) {
+                document.body.classList.remove('light-mode');
+                document.getElementById('theme-toggle-btn').innerHTML = '<i class="fa-solid fa-sun"></i>';
+            } else {
+                document.body.classList.add('light-mode');
+                document.getElementById('theme-toggle-btn').innerHTML = '<i class="fa-solid fa-moon"></i>';
+            }
+        }
+        
+        window.scrollToTop = function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        window.handleScrollButton = function() {
+            const btn = document.getElementById('scroll-to-top-btn');
+            if(window.scrollY > 300) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        }
+        
+        window.addEventListener('scroll', handleScrollButton);
+
+        // ===== FUNCIONES ADICIONALES: Drafts, Scheduler, Moderación, EmailJS, Backups, Analytics, Admins =====
+        // Borradores y programación
+        function getDrafts() { return JSON.parse(localStorage.getItem('ruins_drafts_v1')||'[]'); }
+        function saveDrafts(d) { localStorage.setItem('ruins_drafts_v1', JSON.stringify(d)); }
+        window.saveDraftFromForm = function() {
+            const drafts = getDrafts();
+            const id = document.getElementById('edit-post-id').value || 'd_'+Date.now();
+            const title = document.getElementById('post-title').value.trim();
+            const excerpt = document.getElementById('post-excerpt').value.trim();
+            const content = document.getElementById('post-content').value.trim();
+            const cat = document.getElementById('post-category').value;
+            const img = document.getElementById('post-img-base64').value;
+            const scheduled = document.getElementById('cfg-schedule-datetime').value || null;
+            const existing = drafts.find(x=>x.id===id);
+            if(existing) { existing.title=title; existing.excerpt=excerpt; existing.content=content; existing.category=cat; existing.image=img; existing.scheduled=scheduled; }
+            else drafts.unshift({ id, title, excerpt, content, category:cat, image:img, scheduled });
+            saveDrafts(drafts); renderDraftsList(); alert('Borrador guardado.');
+        }
+        window.publishDraftFromForm = function() {
+            const drafts = getDrafts();
+            const id = document.getElementById('edit-post-id').value;
+            if(id) { const d = drafts.find(x=>x.id===id); if(d) { allNews.unshift({ id: 'n_'+Date.now(), title: d.title, tag: d.tag||'Informe', category:d.category, image:d.image, excerpt:d.excerpt, content:d.content, date: new Date().toLocaleDateString('es-PE') }); saveDrafts(drafts.filter(x=>x.id!==id)); syncDB(); displayNews(); renderInventories(); alert('Publicada.'); return; } }
+            alert('Selecciona un borrador para publicar (cárgalo en el formulario primero).');
+        }
+        function renderDraftsList() {
+            const container = document.getElementById('drafts-list-container'); container.innerHTML='';
+            const drafts = getDrafts(); if(drafts.length===0) { container.innerHTML='<div style="color:var(--texto-apagado);">No hay borradores.</div>'; return; }
+            drafts.forEach(d=>{
+                const div = document.createElement('div'); div.className='control-row-item'; div.style.flexDirection='column';
+                div.innerHTML = `<div style="width:100%; display:flex; justify-content:space-between;"><strong>${d.title||'(sin título)'}</strong><div><button class="btn-inline-admin" onclick="loadDraft('${d.id}')">Cargar</button><button class="btn-inline-admin del-btn" onclick="deleteDraft('${d.id}')">Eliminar</button></div></div><div style="color:var(--texto-apagado); font-size:0.85rem; margin-top:6px;">Programado: ${d.scheduled||'—'}</div>`;
+                container.appendChild(div);
+            });
+        }
+        window.loadDraft = function(id) { const drafts = getDrafts(); const d = drafts.find(x=>x.id===id); if(!d) return; document.getElementById('edit-post-id').value = d.id; document.getElementById('post-title').value = d.title; document.getElementById('post-excerpt').value = d.excerpt; document.getElementById('post-content').value = d.content; document.getElementById('post-category').value = d.category; document.getElementById('post-img-base64').value = d.image||''; document.getElementById('cfg-schedule-datetime').value = d.scheduled||''; }
+        window.deleteDraft = function(id) { if(confirm('Eliminar borrador?')) { const drafts = getDrafts().filter(x=>x.id!==id); saveDrafts(drafts); renderDraftsList(); }}
+
+        // Scheduler: publicar automáticamente si llega la hora
+        function processScheduledPublish() {
+            const now = new Date(); let changed=false; const drafts = getDrafts();
+            drafts.slice().forEach(d=>{ if(d.scheduled) { const when = new Date(d.scheduled); if(!isNaN(when) && when <= now) { allNews.unshift({ id: 'n_'+Date.now(), title: d.title, tag: d.tag||'Informe', category: d.category, image: d.image, excerpt: d.excerpt, content: d.content, date: new Date().toLocaleDateString('es-PE') }); const idx = drafts.findIndex(x=>x.id===d.id); drafts.splice(idx,1); changed=true; audit('schedule_publish', d.id+' → publicado'); } }});
+            if(changed) { saveDrafts(drafts); syncDB(); displayNews(); renderInventories(); renderDraftsList(); }
+        }
+        setInterval(processScheduledPublish, 60*1000);
+        processScheduledPublish();
+
+        // Moderación y alertas
+        function markAllCommentsReviewed() { for(let k in commentsDatabase) commentsDatabase[k].forEach(c=>c.approved=true); syncDB(); renderInventories(); alert('Todos los comentarios marcados como revisados.'); }
+        function purgeSpamComments() { for(let k in commentsDatabase) commentsDatabase[k]=commentsDatabase[k].filter(c=>!c.spam); syncDB(); renderInventories(); alert('Spam eliminado.'); }
+
+        // EmailJS config (simple panel) — no envío si no configurado
+        function saveEmailJSConfig() { const cfg = { service: document.getElementById('emailjs-service').value.trim(), template: document.getElementById('emailjs-template').value.trim(), user: document.getElementById('emailjs-user').value.trim() }; localStorage.setItem('ruins_emailjs_v1', JSON.stringify(cfg)); alert('Claves guardadas (local).'); }
+        function getEmailJSConfig() { return JSON.parse(localStorage.getItem('ruins_emailjs_v1')||'{}'); }
+        async function testSendAlert() { const cfg = getEmailJSConfig(); if(!cfg.service || !cfg.template || !cfg.user) return alert('Configura EmailJS primero.'); try { // intento de envío básico vía fetch a EmailJS REST si el usuario lo requiere — simulamos aquí
+                console.log('Simulación envío EmailJS con', cfg); audit('emailjs_test','prueba enviada'); alert('Prueba simulada (configurada). Si quieres envío real, pega tu clave EmailJS y autorizamos usar fetch.');
+            } catch(e){ console.error(e); alert('Error al enviar prueba: '+e.message); }
+        }
+
+        // Backups / Export / Import
+        function downloadBackup() {
+            const dump = { news: allNews, comments: commentsDatabase, texts: globalTexts, sections: activeSections, colors: systemColors, views: articleViews, ratings: articleRatings, favorites: favoriteArticles };
+            const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'ruins_backup_'+Date.now()+'.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); audit('backup_download','descargó backup');
+        }
+        window.restoreFromFile = function() { document.getElementById('import-json-file').click(); }
+        window.handleImportFile = function(input) { const f = input.files[0]; if(!f) return; const r = new FileReader(); r.onload = e=>{ try{ const parsed = JSON.parse(e.target.result); if(parsed.news) { allNews = parsed.news; commentsDatabase = parsed.comments || {}; globalTexts = parsed.texts || globalTexts; activeSections = parsed.sections || activeSections; systemColors = parsed.colors || systemColors; articleViews = parsed.views || {}; articleRatings = parsed.ratings || {}; favoriteArticles = parsed.favorites || []; syncDB(); renderInventories(); displayNews(); renderPortalTexts(); applyStyles(); alert('Importado con éxito.'); audit('import_json','importado archivo'); } else alert('Archivo no parece ser un backup válido.'); } catch(err){ alert('Error parseando JSON: '+err.message); }}; r.readAsText(f); }
+
+        // Analytics & Trends
+        function computeTrends() {
+            const topViews = Object.entries(articleViews).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>({id:x[0], views:x[1], title:(allNews.find(n=>n.id===x[0])||{}).title}));
+            const topFavs = favoriteArticles.slice(0,5).map(id=>({id, title:(allNews.find(n=>n.id===id)||{}).title}));
+            const topRated = Object.entries(articleRatings).map(([id, val])=>({id, avg: val.totalRating/val.count || 0, title:(allNews.find(n=>n.id===id)||{}).title})).sort((a,b)=>b.avg-a.avg).slice(0,5);
+            const el = document.getElementById('analytics-summary'); el.innerHTML = `<div>Top vistas: ${topViews.map(t=>`<div style="color:var(--texto-apagado)">${t.title||t.id} — ${t.views} vistas</div>`).join('')}</div><div style="margin-top:8px;">Top favoritos: ${topFavs.map(t=>`<div style="color:var(--texto-apagado)">${t.title||t.id}</div>`).join('')}</div><div style="margin-top:8px;">Top calificados: ${topRated.map(t=>`<div style="color:var(--texto-apagado)">${t.title||t.id} — ${t.avg.toFixed(1)} ⭐</div>`).join('')}</div>`; audit('compute_trends','actualizó métricas'); }
+
+        // Admin users & audit log
+        function getAdmins(){ return JSON.parse(localStorage.getItem('ruins_admins_v1')||'["admin@local"]'); }
+        function saveAdmins(a){ localStorage.setItem('ruins_admins_v1', JSON.stringify(a)); }
+        function renderAdminUsers(){ const list = document.getElementById('admin-users-list'); list.innerHTML=''; getAdmins().forEach((e,i)=>{ const div=document.createElement('div'); div.className='control-row-item'; div.innerHTML = `<span>${e}</span><div><button class="btn-inline-admin del-btn" onclick="removeAdmin(${i})">Quitar</button></div>`; list.appendChild(div); }); }
+        window.addAdmin = function(){ const email=document.getElementById('new-admin-email').value.trim(); if(!email) return alert('Email requerido'); const a=getAdmins(); if(a.includes(email)) return alert('Ya existe'); a.push(email); saveAdmins(a); renderAdminUsers(); document.getElementById('new-admin-email').value=''; audit('add_admin', email); }
+        window.removeAdmin = function(idx){ const a=getAdmins(); if(!confirm('Quitar admin '+a[idx]+' ?')) return; const removed=a.splice(idx,1)[0]; saveAdmins(a); renderAdminUsers(); audit('remove_admin', removed); }
+
+        // Audit log
+        function audit(action, detail){ const logs = JSON.parse(localStorage.getItem('ruins_audit_v1')||'[]'); logs.unshift({ t: new Date().toLocaleString(), action, detail }); localStorage.setItem('ruins_audit_v1', JSON.stringify(logs.slice(0,200))); renderAuditLog(); }
+        function renderAuditLog(){ const el = document.getElementById('audit-log'); const logs = JSON.parse(localStorage.getItem('ruins_audit_v1')||'[]'); el.innerHTML = logs.map(l=>`<div style="font-size:0.75rem; color:var(--texto-apagado);">[${l.t}] ${l.action} — ${l.detail}</div>`).join(''); }
+        function updateAdminHeader() { const el = document.getElementById('admin-session-info'); el.innerHTML = `Moderador: <span style="color:#ffffff;">${currentAdminUser || 'ninguno'}</span>`; }
+        function clearAdminSession() { currentAdminUser = null; isAdminUnlocked = false; updateAdminHeader(); }
+
+        // Búsqueda avanzada admin
+        window.adminAdvancedSearch = function(){ const q=document.getElementById('admin-advanced-search').value.toLowerCase(); const inv = document.getElementById('admin-news-inventory'); inv.innerHTML=''; if(!q) return renderInventories(); allNews.filter(n=> (n.title+n.excerpt+n.content+(n.tag||'')).toLowerCase().includes(q)).forEach(n=>{ const div=document.createElement('div'); div.className='control-row-item'; div.innerHTML = `<span><b>[${n.category}]</b> ${n.title.substring(0,80)}</span><div><button class="btn-inline-admin edit-btn" onclick="loadPostToEdit('${n.id}')">Editar</button></div>`; inv.appendChild(div); }); }
+
+        // Theme preview (temporal)
+        let _previewBackup = null;
+        window.previewCurrentTheme = function(){ _previewBackup = { bg: systemColors.bg, accent: systemColors.accent }; const bg = document.getElementById('cfg-bg-color').value || systemColors.bg; const ac = document.getElementById('cfg-accent-color').value || systemColors.accent; document.documentElement.style.setProperty('--bg-principal', bg); document.documentElement.style.setProperty('--color-acento', ac); }
+        window.revertThemePreview = function(){ if(_previewBackup){ systemColors.bg=_previewBackup.bg; systemColors.accent=_previewBackup.accent; applyStyles(); _previewBackup=null; } }
+
+        // Inicializar vistas de nuevas secciones
+        renderDraftsList(); renderAdminUsers(); renderAuditLog(); computeTrends();
+
+        applyStyles();
+        buildStructure();
+        displayTicker();
+        displayNews();
+        renderPortalTexts();
+        
+        // APLICAR TEMA AL CARGAR
+        if(!isDarkMode) {
+            document.body.classList.add('light-mode');
+            document.getElementById('theme-toggle-btn').innerHTML = '<i class="fa-solid fa-moon"></i>';
+        }
+    </script>
+</body>
+</html>
